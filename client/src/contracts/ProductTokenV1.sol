@@ -89,10 +89,9 @@ contract ProductTokenV1 is ProductToken {
                 change = _tokenUtils.toOrigValue(change, ids_);
                 instance.transfer(msg.sender, change);
             }
-            _updateSupplierFee(fee);
+            _updateSupplierFee(fee.mul(1e12).div(8e12));
             if(ids_ == INDEX_HIGH) {
-                //20% of the fee should be as reward
-                poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(2000).div(10000));
+                poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
                 poolInfo.amount = poolInfo.amount.add(price);
                 updatePool();
                 _updateUserInfo(price);
@@ -110,8 +109,8 @@ contract ProductTokenV1 is ProductToken {
 
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
-        if(isHarvest_) {
-            UserInfo storage user = userInfo[msg.sender];
+        UserInfo storage user = userInfo[msg.sender];
+        if(isHarvest_ || balanceOf(msg.sender) <= user.records.length) {
             if(user.records.length > 0) {
                 uint i = amount_;
                 if(amount_ > user.records.length) {
@@ -136,7 +135,7 @@ contract ProductTokenV1 is ProductToken {
         uint256 accValue = _tokenUtils.toOrigValue(price, INDEX_HIGH);
 
         bool success = IERC20(highAddress).transfer(msg.sender, accValue);
-        _updateSupplierFee(fee);
+        _updateSupplierFee(fee.mul(1e12).div(2e12));
         require(success, "selling token failed");
     }
 
@@ -153,13 +152,13 @@ contract ProductTokenV1 is ProductToken {
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
 
         reimburseAmount = reimburseAmount.sub(fee);
-        _updateSupplierFee(fee);
+        _updateSupplierFee(fee.mul(1e12).div(2e12));
         _addEscrow(amount_,  _tokenUtils.toOrigValue(reimburseAmount, INDEX_HIGH));
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
 
-        if(isHarvest_) {
-            UserInfo storage user = userInfo[msg.sender];
+        UserInfo storage user = userInfo[msg.sender];
+        if(isHarvest_ || balanceOf(msg.sender) <= user.records.length ) {
             if(user.records.length > 0) {
                 uint i = amount_;
                 if(amount_ > user.records.length) {
@@ -231,10 +230,11 @@ contract ProductTokenV1 is ProductToken {
             if(change > 0) {
                 instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, change);
             }
-            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e10).div(1e12));
+            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
+            poolInfo.amount = poolInfo.amount.add(price);
             updatePool();
             _updateUserInfo(price);
-            _updateSupplierFee(fee);
+            _updateSupplierFee(fee.mul(1e12).div(8e12));
         } else {
             instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, maxPrice_);
         }
@@ -267,7 +267,7 @@ contract ProductTokenV1 is ProductToken {
         }
 
         voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, price);
-        _updateSupplierFee(fee);
+        _updateSupplierFee(fee.mul(1e12).div(2e12));
     }
 
     function getCurrentPriceByIds(uint256 ids_) external view virtual returns (uint256) {
@@ -294,8 +294,7 @@ contract ProductTokenV1 is ProductToken {
 
     function _updateSupplierFee(uint256 fee) internal {
         if( fee > 0 ) {
-            uint256 charge = fee.mul(1e11).div(1e12); //10% of fee
-            charge = _tokenUtils.toOrigValue(charge, INDEX_HIGH);
+            uint256 charge = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
             supplier.amount = supplier.amount.add(charge);
         }
     }
