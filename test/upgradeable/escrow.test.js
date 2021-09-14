@@ -1,5 +1,5 @@
-const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { BN, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
+const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { expect, assert } = require('chai');
 
 const ERC1967Proxy = artifacts.require('ERC1967Proxy');
@@ -10,6 +10,7 @@ const DaiMock = artifacts.require('DaiMock');
 const BondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('ProductUpgradeableBeacon');
 const ChainLinkMock = artifacts.require('ChainLinkMock');
+const TokenUtils = artifacts.require('TokenUtils');
 
 require('chai')
 	.use(require('chai-as-promised'))
@@ -26,12 +27,17 @@ contract('escrow flow check', function (accounts) {
 	const baseReserve = web3.utils.toWei('0.33', 'ether');
 
     /* GLOBAL PARAMETERS*/
-    const DEG = false;
-    const DaiEtherRaio = 0.0003223554;
+    const DEG = true;
+    const DaiEtherRaio = 1;
+    const HsTokenEtherRatio = 1;
 
     const STATE_AWAITING_PROCESSING = 1;
     const STATE_COMPLETE_USER_REFUND = 2;
     const STATE_COMPLETE = 3;
+
+    const  INDEX_ETH  = 0;
+    const  INDEX_HIGH = 1;
+    const  INDEX_DAI  = 2;
 
     const numberToBigNumber = (val) => web3.utils.toWei(val.toString(), 'ether');
     const bigNumberToNumber = (val) => web3.utils.fromWei(val.toString(), 'ether');
@@ -52,8 +58,10 @@ contract('escrow flow check', function (accounts) {
     this.implementationV0 = await ProductToken.new();
     this.implementationV1 = await ProductTokenV1.new();
     this.bondingCurveImpl = await BondingCurve.new();
-    this.daiMock = await DaiMock.new();
+    this.HighMock = await DaiMock.new();
     this.DaiEtherMock = await ChainLinkMock.new(numberToBigNumber(DaiEtherRaio), {from: this.owner});
+    this.HsTokenEtherMock = await ChainLinkMock.new(numberToBigNumber(HsTokenEtherRatio), {from: this.owner});
+    this.tokenUtils = await TokenUtils.new();
 
     // initial tokenfactory
     const beacon = await UpgradeableBeacon.new(this.implementationV1.address, {from: this.owner});
@@ -64,7 +72,7 @@ contract('escrow flow check', function (accounts) {
 
     // create HighGO token
     const data1 = this.implementationV1.contract
-              .methods.initialize('HighGO', 'HG', this.bondingCurveImpl.address, exp, max, offset, baseReserve, this.daiMock.address, this.DaiEtherMock.address).encodeABI();
+              .methods.initialize('HighGO', 'HG', this.bondingCurveImpl.address, exp, max, offset, baseReserve).encodeABI();
     await this.tokenFactory.createToken(
       "HighGO", data1, {from: this.owner}
     );
@@ -72,30 +80,37 @@ contract('escrow flow check', function (accounts) {
     // get HighGO token address
     const highGoAddress = await this.tokenFactory.retrieveToken.call("HighGO");
     this.highGo = new ProductTokenV1(highGoAddress);
-    this.highGo.launch({from: this.owner});
+
+    //setup and update tokenUtils
+    await this.highGo.setupTokenUtils(this.tokenUtils.address);
+    await this.tokenUtils.updateCurrency(1, 'HIGH', this.HighMock.address, this.DaiEtherMock.address, this.HsTokenEtherMock.address, true );
+
+    await this.highGo.launch({from: this.owner});
   });
 
   it('tradein should success', async function (){
     const redeemNumber = 3;
-    let {daiMock, highGo, user1} = this;
+    let {HighMock, highGo, user1} = this;
 
-    await daiMock.faucet(user1, numberToBigNumber(1000));
+    await HighMock.faucet(user1, numberToBigNumber(1000));
 
     for(let i=0 ; i<5; i++) {
-      let price = await highGo.getCurrentPrice();
-      if(DEG) console.log(i, ': current highGo price(DAI)', bigNumberToNumber(price));
-      await daiMock.approve(highGo.address, price, {from: user1});
-      await highGo.buyWithDai(price, {from: user1});
+      let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+      if(DEG) console.log(i, ': current highGo price(HIGH)', bigNumberToNumber(price));
+      await HighMock.approve(highGo.address, price, {from: user1});
+      await highGo.buyERC20(INDEX_HIGH, price, {from: user1}); //1:HIGH
     }
 
     // get sell return before user starting tradin
     let redeemTokenValue = await highGo.calculateSellReturn(redeemNumber);
+    redeemTokenValue = await this.tokenUtils.toOrigValue(redeemTokenValue, INDEX_HIGH);
+    console.log('redeemTokenValue', bigNumberToNumber(redeemTokenValue));
 
     // user tradin
     let tradeinCountBefore = await highGo.tradeinCount();
     let balanceBefore = await highGo.balanceOf(user1);
     if(DEG) console.log('user1 owner amount of token before tradein:', balanceBefore.toString());
-    await highGo.tradein(redeemNumber, {from: user1});
+    await highGo.tradein(redeemNumber, false, {from: user1});
     let balanceAfter = await highGo.balanceOf(user1);
     if(DEG) console.log('user1 owner amount of token after tradein:', balanceAfter.toString());
 
@@ -106,7 +121,7 @@ contract('escrow flow check', function (accounts) {
     assert.equal(list.length, 1, "user1 only redeem once");
 
     let trans = list[0];
-
+    console.log('trans.value', bigNumberToNumber(trans.value));
     assert.equal(trans.state, STATE_AWAITING_PROCESSING, "escrow initial state should be STATE_AWAITING_PROCESSING");
     assert.equal(trans.amount, redeemNumber);
     assert.equal(redeemTokenValue
@@ -116,15 +131,15 @@ contract('escrow flow check', function (accounts) {
 
   it('check escrow state update', async function (){
     const redeemNumber = 1;
-    let {daiMock, highGo, user1, owner} = this;
+    let {HighMock, highGo, user1, owner} = this;
 
-    await daiMock.faucet(user1, numberToBigNumber(1000));
+    await HighMock.faucet(user1, numberToBigNumber(1000));
 
-    let price = await highGo.getCurrentPrice();
-    await daiMock.approve(highGo.address, price, {from: user1});
-    await highGo.buyWithDai(price, {from: user1});
+    let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+    await HighMock.approve(highGo.address, price, {from: user1});
+    await highGo.buyERC20(INDEX_HIGH, price, {from: user1});
 
-    await highGo.tradein(redeemNumber, {from: user1});
+    await highGo.tradein(redeemNumber, false, {from: user1});
 
     let transId = 0;
     let trans = (await highGo.getEscrowHistory(user1))[transId];
@@ -138,24 +153,24 @@ contract('escrow flow check', function (accounts) {
 
   it('check tradein refund', async function (){
     const redeemNumber = 1;
-    let {daiMock, highGo, user1, owner} = this;
+    let {HighMock, highGo, user1, owner} = this;
 
-    await daiMock.faucet(user1, numberToBigNumber(1000));
+    await HighMock.faucet(user1, numberToBigNumber(1000));
 
-    let price = await highGo.getCurrentPrice();
-    await daiMock.approve(highGo.address, price, {from: user1});
-    await highGo.buyWithDai(price, {from: user1});
+    let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+    await HighMock.approve(highGo.address, price, {from: user1});
+    await highGo.buyERC20(INDEX_HIGH, price, {from: user1});
 
-    await highGo.tradein(redeemNumber, {from: user1});
+    await highGo.tradein(redeemNumber, false, {from: user1});
 
     let transId = 0;
     let trans = (await highGo.getEscrowHistory(user1))[transId];
     assert.equal(trans.state, STATE_AWAITING_PROCESSING);
 
     //update escrow state to refund by owner
-    const balanceBeforeRefund = await daiMock.balanceOf(user1, {from: user1});
+    const balanceBeforeRefund = await HighMock.balanceOf(user1, {from: user1});
     await highGo.updateUserRefund(user1, transId, {from: owner});
-    const balanceAfterRefund = await daiMock.balanceOf(user1, {from: user1});
+    const balanceAfterRefund = await HighMock.balanceOf(user1, {from: user1});
 
     trans = (await highGo.getEscrowHistory(user1))[transId];
     assert.equal(trans.state, STATE_COMPLETE_USER_REFUND, "escrow state should be STATE_COMPLETE_USER_REFUND");

@@ -6,6 +6,8 @@ const Factory = artifacts.require("TokenFactory");
 const ERC1967Proxy = artifacts.require('ERC1967Proxy');
 const BancorBondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('UpgradeableBeacon');
+const IVNFT = artifacts.require('IVNFT');
+const TokenUtils = artifacts.require('TokenUtils');
 
 module.exports = async function (deployer, network, accounts ) {
 
@@ -62,14 +64,45 @@ module.exports = async function (deployer, network, accounts ) {
 	const max = '500';
 	const offset = '10';
 	const baseReserve = web3.utils.toWei('0.33', 'ether');
-	const val = tokenImplV1.contract.methods.initialize('HighGO', 'HG', BondingCurveAddress, exp, max, offset, baseReserve,  daiAdress, chainlinkAddress).encodeABI();
+	const val = tokenImplV1
+					.contract
+					.methods
+					.initialize('HighGO', 'HG', BondingCurveAddress, exp, max, offset, baseReserve).encodeABI();
 
 	await factoryInstance.createToken(
 		"HighGO", val
 	);
 
+	let zeroAddress = "0x0000000000000000000000000000000000000000";
 	//default launch token directly
 	const highGOAddress = await factoryInstance.retrieveToken("HighGO");
+	console.log('highGOAddress', highGOAddress);
 	const highGOToken = await TokenV1.at(highGOAddress);
+	// await highGOToken.addCurrency('ETH', zeroAddress, zeroAddress, zeroAddress, false );
+	// await highGOToken.addCurrency('HIGH', zeroAddress, zeroAddress, zeroAddress, false );
+	// await highGOToken.addCurrency('DAI', zeroAddress, zeroAddress, zeroAddress, false );
+	await deployer.deploy(TokenUtils);
+	const tokenUtils = await TokenUtils.deployed();
+	highGOToken.setupTokenUtils(tokenUtils.address);
+
+	//voucher related operation
+	let voucherAddress = "0x84285280fC626b50C4aC1e0Ca555AaBc0aED9DbC";
+	// let voucher = IVNFT.at(voucherAddress);
+
+	// let TokenId= 13; //owner tokenId
+	// let faceNumber = web3.utils.toWei('100', 'ether');
+	// //要先給product token 創建一個nft 並轉一些錢進去。
+	// await voucher.transferFrom(accounts[0] , highGOAddress, TokenId, faceNumber);
+	// //獲取voucher 真正的 token id (這不因該重複創建，因該要避免重複創建)
+	// let id =  await voucher.tokenOfOwnerByIndex(highGOAddress, 0);
+	// await highGOToken.setupVoucher(voucherAddress ,id);
+	await highGOToken.setupVoucher(voucherAddress ,10, true); //fake
 	await highGOToken.launch();
+
+	//如果最後需要提款的話，才呼叫這個
+	let isClaimVoucher =false;
+	if(isClaimVoucher) {
+		await highGOToken.claimVoucher(TokenId);
+	}
+
 };

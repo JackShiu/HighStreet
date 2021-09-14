@@ -59,8 +59,8 @@ contract ProductTokenV5 is ProductTokenV3 {
   */
   function initializeV5(string memory _name, string memory _symbol, address _bondingCurveAddress, uint32 _reserveRatio, uint32 _maxTokenCount, uint32 _supplyOffset, uint256 _baseReserve, uint256 _newInitValue, address _daiAddress, address _chainlink) public  initializer {		
     __ERC20_init(_name, _symbol);
-    ProductToken.__ProductToken_init_unchained(_bondingCurveAddress, _reserveRatio, _maxTokenCount, _supplyOffset, _baseReserve);
-    ProductTokenV1.__ProductToken_init_unchained(_daiAddress, _chainlink);
+    // ProductToken.__ProductToken_init_unchained(_bondingCurveAddress, _reserveRatio, _maxTokenCount, _supplyOffset, _baseReserve);
+    // ProductTokenV1.__ProductToken_init_unchained(_daiAddress, _chainlink);
     newInitValue= _newInitValue;
   }
   function getNewInitValue() public view returns(uint256){
