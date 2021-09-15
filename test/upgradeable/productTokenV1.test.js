@@ -27,7 +27,7 @@ contract('productTokenV1 flow check', function (accounts) {
 	const baseReserve = web3.utils.toWei('0.33', 'ether');
 
     /* GLOBAL PARAMETERS*/
-    const DEG = false;
+    const DEG = true;
     const numberToBigNumber = (val) => web3.utils.toWei(val.toString(), 'ether');
     const bigNumberToNumber = (val) => web3.utils.fromWei(val.toString(), 'ether');
     const DaiEtherRatio = numberToBigNumber(0.0003223554);
@@ -326,53 +326,86 @@ contract('productTokenV1 flow check', function (accounts) {
         assert.equal(await highGo.balanceOf(user1), 1);
     });
 
-    // it('Supplier', async function (){
-    //     let { highGo, daiMock, HighMock, user1, owner, supplier} =this;
+    it('Supplier', async function (){
+        let { highGo, daiMock, HighMock, user1, owner, supplier, tokenUtils} =this;
 
-    //     await daiMock.faucet(user1, numberToBigNumber(1000));
-    //     await HighMock.faucet(user1, numberToBigNumber(1000));
+        await daiMock.faucet(user1, numberToBigNumber(1000));
+        await HighMock.faucet(user1, numberToBigNumber(1000));
+        await HighMock.faucet(highGo.address, numberToBigNumber(1000));
 
-    //     highGo.launch({from: owner});
+        highGo.launch({from: owner});
 
-    //     // setSupplierWallet
-    //     await highGo.setSupplierWallet(supplier, {from: owner});
+        // setSupplierWallet
+        await highGo.updateSupplierInfo(supplier, {from: owner});
 
-    //     let supplierDai = new BN(0);
+        let supplierFee = new BN(0);
 
-    //     for(let i=0 ; i< 5; i++) {
-    //         let price = await highGo.getCurrentPrice();
-    //         if(DEG) console.log(i, ': current product price(DAI)', bigNumberToNumber(price));
-    //         await daiMock.approve(highGo.address, price, {from: user1});
-    //         await highGo.buyWithDai(price, {from: user1});
-    //         // 1% for supplier fee
-    //         let supplierFeeRate = (new BN(price)).mul(new BN(1)).div(new BN(100));
-    //         if(DEG) console.log(i, ': supplierFeeRate', bigNumberToNumber(supplierFeeRate));
-    //         supplierDai = supplierDai.add(supplierFeeRate);
-    //     }
+        for(let i=0 ; i< 5; i++) {
+            let price = await highGo.getCurrentPriceByIds(1);
+            if(DEG) console.log(i, ': current product price(HIGH)', bigNumberToNumber(price));
+            await HighMock.approve(highGo.address, price, {from: user1});
+            await highGo.buyERC20(1, price, {from: user1});
+            // 1% for supplier fee
+            let supplierFeeRate = (new BN(price))
+                                    .mul(new BN(numberToBigNumber(1)))
+                                    .div(new BN(numberToBigNumber(108)));
+            if(DEG) console.log(i, ': supplierFeeRate', bigNumberToNumber(supplierFeeRate));
+            supplierFee = supplierFee.add(supplierFeeRate);
+        }
 
-    //     let balance = await highGo.getSupplierDaiBalance();
-    //     assert.equal(supplierDai.toString(), balance.toString());
+        let balance = await highGo.getSupplierBalance();
+        if(DEG) console.log("1.supplierFee:", bigNumberToNumber(supplierFee));
+        if(DEG) console.log("1.balance:", bigNumberToNumber(balance));
+        assert.equal(supplierFee.toString(), balance.toString());
 
-    //     let amountOfSell = 2;
-    //     // sellReturn already contain 2% platform fee
-    //     let sellReturn = await highGo.calculateSellReturn(amountOfSell);
-    //     // origin value = sellReturn / 0.98
-    //     sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
-    //     // 1% for supplier fee
-    //     sellReturn = sellReturn.mul(new BN(1)).div(new BN(100));
-    //     supplierDai = supplierDai.add(sellReturn);
-    //     await highGo.sell(amountOfSell, {from: user1});
+        let amountToSell = 2;
+        // sellReturn already contain 2% platform fee
+        let sellReturn = await highGo.calculateSellReturn(amountToSell);
+        // origin value = sellReturn / 0.98
+        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
+        // 1% for supplier fee
+        let fee = sellReturn.mul(new BN(numberToBigNumber(1))).div(new BN(numberToBigNumber(100)));
+        // change face to high token
+        fee = await tokenUtils.toOrigValue(fee, INDEX_HIGH);
+        console.log("fee:", bigNumberToNumber(fee));
+        supplierFee = supplierFee.add(fee);
+        await highGo.sell(amountToSell, false, {from: user1});
 
-    //     balance = await highGo.getSupplierDaiBalance();
-    //     assert.equal(supplierDai.toString(), balance.toString());
+        balance = await highGo.getSupplierBalance();
+        if(DEG) console.log("2.supplierFee:", bigNumberToNumber(supplierFee));
+        if(DEG) console.log("2.balance:", bigNumberToNumber(balance));
+        // console.log(await highGo.balanceOf(user1));
+        assert.equal(supplierFee.toString(), balance.toString());
 
-    //     // claimSupplierDai
-    //     let claimValue = (new BN(balance)).mul(new BN(50)).div(new BN(100));
-    //     let remainValue = (new BN(balance)).sub(claimValue);
-    //     await highGo.claimSupplierDai(claimValue, {from: supplier});
-    //     let balanceAfter = await highGo.getSupplierDaiBalance();
-    //     assert.equal(remainValue.toString(), balanceAfter.toString(), "remain supplier dai should be right");
 
-    // });
+        //redeem
+        // sellReturn already contain 2% platform fee
+        sellReturn = await highGo.calculateSellReturn(amountToSell);
+        // origin value = sellReturn / 0.98
+        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
+        // 1% for supplier fee
+        fee = sellReturn.mul(new BN(numberToBigNumber(99))).div(new BN(numberToBigNumber(100)));
+        // change face to high token
+        fee = await tokenUtils.toOrigValue(fee, INDEX_HIGH);
+        console.log("fee:", bigNumberToNumber(fee));
+        supplierFee = supplierFee.add(fee);
+        await highGo.tradein(amountToSell, false, {from: user1});
 
+        balance = await highGo.getSupplierBalance();
+        if(DEG) console.log("3.supplierFee:", bigNumberToNumber(supplierFee));
+        if(DEG) console.log("3.balance:", bigNumberToNumber(balance));
+        console.log(await highGo.balanceOf(user1));
+        assert.equal(supplierFee.toString(), balance.toString());
+
+        // claimSupplierDai
+        let claimValue = (new BN(balance)).mul(new BN(numberToBigNumber(50))).div(new BN(numberToBigNumber(100)));
+        let remainValue = (new BN(balance)).sub(claimValue);
+        await highGo.claimSupplier(claimValue, {from: supplier});
+        let balanceAfter = await highGo.getSupplierBalance();
+        assert.equal(remainValue.toString(), balanceAfter.toString(), "remain supplier high should be right");
+
+    });
+
+    //user staking...
+    //deposit ether/dai/high
 })

@@ -113,6 +113,24 @@ contract('productTokenV1 flow check', function (accounts) {
         await highGo.buyERC20(1, price, {from: user1});
         console.log(await highGo.balanceOf(user1));
 
+        // HIGH BUY
+        price = await highGo.getCurrentPriceByIds(1); //1 is high
+        // add 0.1% for prevent Exchange loss
+        price = (new BN(price)).mul(new BN(1001000)).div(new BN(1000000));
+        console.log('price', bigNumberToNumber(price));
+        await HighMock.approve(highGo.address, price, {from: user1});
+        await highGo.buyERC20(1, price, {from: user1});
+        console.log(await highGo.balanceOf(user1));
+
+        // HIGH BUY
+        price = await highGo.getCurrentPriceByIds(1); //1 is high
+        // add 0.1% for prevent Exchange loss
+        price = (new BN(price)).mul(new BN(1001000)).div(new BN(1000000));
+        console.log('price', bigNumberToNumber(price));
+        await HighMock.approve(highGo.address, price, {from: user1});
+        await highGo.buyERC20(1, price, {from: user1});
+        console.log(await highGo.balanceOf(user1));
+
         // DAI BUY
         price = await highGo.getCurrentPriceByIds(2); //2 is dai
         // add 0.1% for prevent Exchange loss
@@ -120,60 +138,50 @@ contract('productTokenV1 flow check', function (accounts) {
         console.log('price', bigNumberToNumber(price));
         await daiMock.approve(highGo.address, price, {from: user1});
         await highGo.buyERC20(2, price, {from: user1}); //2 is dai
-        console.log(await highGo.balanceOf(user1));
+        console.log((await highGo.balanceOf(user1)).toString());
+
+        const showUserInfo = async (info) => {
+            console.log("User:amount       :",bigNumberToNumber(info.amount));
+            console.log("User:rewardDebt   :",bigNumberToNumber(info.rewardDebt));
+            console.log("User:rewardPending:",bigNumberToNumber(info.rewardPending));
+            info.records.forEach((v,i)=> console.log("User:records:",i ,bigNumberToNumber(v)))
+        }
+        const showPoolInfo = async (info) => {
+            console.log("Pool:amount===========:");
+            console.log("Pool:amount           :",bigNumberToNumber(info.amount));
+            console.log("Pool:accRewardPerShare:",bigNumberToNumber(info.accRewardPerShare));
+            console.log("Pool:tokenReward      :",bigNumberToNumber(info.tokenReward));
+        }
 
         //USER INFO
-        let userInfo = await highGo.getuserInfo(user1);
-        console.log(userInfo);
+        await showUserInfo(await highGo.getUserInfo(user1))
+        await showPoolInfo(await highGo.getPoolInfo())
 
         //SELL
         await highGo.sell(1, false, {from: user1});
         console.log(await highGo.balanceOf(user1));
 
+        //USER INFO
+        await showUserInfo(await highGo.getUserInfo(user1))
+        await showPoolInfo(await highGo.getPoolInfo())
+
+        //SELL
         await highGo.sell(1, true, {from: user1});
         console.log(await highGo.balanceOf(user1));
 
         //USER INFO
-        userInfo = await highGo.getuserInfo(user1);
-        console.log(userInfo);
+        console.log("CHECK++++");
+        await showUserInfo(await highGo.getUserInfo(user1))
+        await showPoolInfo(await highGo.getPoolInfo())
 
         // TRDEIN
-        await highGo.tradein(1, {from: user1});
-        console.log(await highGo.balanceOf(user1));
-        let list = await highGo.getEscrowHistory(user1);
-        console.log(list);
+        await highGo.tradein(1, false, {from: user1});
+        console.log((await highGo.balanceOf(user1)).toString());
+        // let list = await highGo.getEscrowHistory(user1);
+        // console.log(list);
 
-        // await this.highGo.setupHsToken(this.HighMock.address, this.HsTokenEtherMock.address);
-
-        // let price = await highGo.getCurrentPrice();
-        // await daiMock.approve(highGo.address, price, {from: user1});
-
-        // await expectRevert(
-        //     highGo.buyWithDai(price, {from: user1})
-        //     , "unable to trade now"
-        // );
-
-        // price = (new BN(price)).mul(new BN(DaiEtherRatio));
-        // await expectRevert(
-        //     highGo.buy({from: user1, value:price})
-        //     , "unable to trade now"
-        // );
-
-        // price = (new BN(price)).mul(new BN(DaiEtherRatio)).div(new BN(HsTokenEtherRatio));
-        // await expectRevert(
-        //     highGo.buyWithHsToken(price, {from: user1})
-        //     , "unable to trade now"
-        // );
-
-        // await expectRevert(
-        //     highGo.sell(1, {from: user1})
-        //     , "unable to trade now"
-        // );
-
-        // await expectRevert(
-        //     highGo.tradein(1, {from: user1})
-        //     , "unable to trade now"
-        // );
+        //dai/high for one
+        //sell with harvest or not harvest
     });
 
 })

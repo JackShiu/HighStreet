@@ -67,7 +67,9 @@ contract ProductTokenV1 is ProductToken {
                 change = _tokenUtils.toOrigValue(change, INDEX_ETH);
                 payable(msg.sender).transfer(change);
             }
-            _updateSupplierFee(fee);
+            _updateSupplierFee(fee.mul(1e12).div(8e12));
+            fee = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
+            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
         }else {
             payable(msg.sender).transfer(msg.value);
         }
@@ -90,8 +92,18 @@ contract ProductTokenV1 is ProductToken {
                 instance.transfer(msg.sender, change);
             }
             _updateSupplierFee(fee.mul(1e12).div(8e12));
+            fee = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
+            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
             if(ids_ == INDEX_HIGH) {
-                poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
+                price = _tokenUtils.toOrigValue(price, INDEX_HIGH);
+                //清算之前的給用戶
+                UserInfo storage user = userInfo[msg.sender];
+                PoolInfo storage pool = poolInfo;
+                uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+                if(pending > 0) {
+                    instance.transfer(msg.sender, pending);
+                }
+                // 從新計算
                 poolInfo.amount = poolInfo.amount.add(price);
                 updatePool();
                 _updateUserInfo(price);
@@ -109,31 +121,9 @@ contract ProductTokenV1 is ProductToken {
 
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
-        UserInfo storage user = userInfo[msg.sender];
-        if(isHarvest_ || balanceOf(msg.sender) <= user.records.length) {
-            if(user.records.length > 0) {
-                uint i = amount_;
-                if(amount_ > user.records.length) {
-                    i = user.records.length;
-                }
-                uint256 value;
-                while(i != 0) {
-                    value = value.add(user.records[ i - 1 ]);
-                    delete user.records[ i - 1 ];
-                    i--;
-                }
-                uint256 pending = value.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-                if(pending > 0) {
-                    IERC20(highAddress).transfer(msg.sender, pending);
-                    user.amount = user.amount.sub(pending);
-                }
-                updatePool();
-                user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
-            }
-        }
+        _updateSellStaking(amount_, isHarvest_, false, 0);
 
         uint256 accValue = _tokenUtils.toOrigValue(price, INDEX_HIGH);
-
         bool success = IERC20(highAddress).transfer(msg.sender, accValue);
         _updateSupplierFee(fee.mul(1e12).div(2e12));
         require(success, "selling token failed");
@@ -148,37 +138,17 @@ contract ProductTokenV1 is ProductToken {
         require(_tokenUtils.isSupportIds(INDEX_HIGH), 'not support');
         require(amount_ > 0, "Amount must be non-zero.");
         require(balanceOf(msg.sender) >= amount_, "Insufficient tokens to burn.");
-        address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
+
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
 
+        //99% for supplier
+        _updateSupplierFee(reimburseAmount.mul(0.99e12).div(1e12));
         reimburseAmount = reimburseAmount.sub(fee);
-        _updateSupplierFee(fee.mul(1e12).div(2e12));
         _addEscrow(amount_,  _tokenUtils.toOrigValue(reimburseAmount, INDEX_HIGH));
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
 
-        UserInfo storage user = userInfo[msg.sender];
-        if(isHarvest_ || balanceOf(msg.sender) <= user.records.length ) {
-            if(user.records.length > 0) {
-                uint i = amount_;
-                if(amount_ > user.records.length) {
-                    i = user.records.length;
-                }
-                uint256 value;
-                while(i != 0) {
-                    value = value.add(user.records[ i - 1 ]);
-                    delete user.records[ i - 1 ];
-                    i--;
-                }
-                uint256 pending = value.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-                if(pending > 0) {
-                    IERC20(highAddress).transfer(msg.sender, pending);
-                    user.amount = user.amount.sub(pending);
-                }
-                updatePool();
-                user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
-            }
-        }
+        _updateSellStaking(amount_, isHarvest_, false, 0);
 
         emit Tradein(msg.sender, amount_);
     }
@@ -192,11 +162,42 @@ contract ProductTokenV1 is ProductToken {
         poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(poolInfo.tokenReward.mul(1e12).div(supply));
     }
 
+    function _updateSellStaking(uint32 amount_, bool isHarvest_, bool isVoucher_, uint256 tokenId_) internal virtual {
+        if(userInfo[msg.sender].amount > 0) {
+            address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
+            UserInfo storage user = userInfo[msg.sender];
+            if(isHarvest_ || balanceOf(msg.sender) <= user.records.length) {
+                uint max = uint256(amount_);
+                if(max > user.records.length) {
+                    max = user.records.length;
+                }
+                uint256 value = 0;
+                for(uint i = 0; i < max; i++) {
+                    value = value.add(user.records[user.records.length.sub(1)]);
+                    user.records.pop();
+                }
+                PoolInfo storage pool = poolInfo;
+                uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+
+                poolInfo.amount = poolInfo.amount.sub(value);
+                if(pending > 0) {
+                    if(isVoucher_) {
+                        voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
+                    } else {
+                        IERC20(highAddress).transfer(msg.sender, pending);
+                    }
+
+                }
+                user.amount = user.amount.sub(value);
+                user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
+            }
+        }
+    }
+
     function _updateUserInfo(uint256 price_ ) internal virtual {
         UserInfo storage user = userInfo[msg.sender];
         user.amount = user.amount.add(price_);
         user.records.push(price_);
-        user.rewardPending = user.amount.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt).add(user.rewardPending);
         user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
     }
 
@@ -230,11 +231,17 @@ contract ProductTokenV1 is ProductToken {
             if(change > 0) {
                 instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, change);
             }
+            _updateSupplierFee(fee.mul(1e12).div(8e12));
             poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
+            UserInfo storage user = userInfo[msg.sender];
+            PoolInfo storage pool = poolInfo;
+            uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+            if(pending > 0) {
+                instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
+            }
             poolInfo.amount = poolInfo.amount.add(price);
             updatePool();
             _updateUserInfo(price);
-            _updateSupplierFee(fee.mul(1e12).div(8e12));
         } else {
             instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, maxPrice_);
         }
@@ -244,31 +251,29 @@ contract ProductTokenV1 is ProductToken {
         require(voucher.isEnable, 'unable to use voucher');
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
-        UserInfo storage user = userInfo[msg.sender];
-
-        if(user.records.length > 0) {
-            uint i = amount_;
-            if(amount_ > user.records.length) {
-                i = user.records.length;
-            }
-            uint256 value;
-            while(i != 0) {
-                value = value.add(user.records[ i - 1 ]);
-                delete user.records[ i -1 ];
-                i--;
-            }
-            uint256 pending = value.mul(poolInfo.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-            if(pending > 0) {
-                voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
-                user.amount = user.amount.sub(pending);
-            }
-            updatePool();
-            user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
-        }
+        _updateSellStaking(amount_, true, true, tokenId_);
 
         voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, price);
         _updateSupplierFee(fee.mul(1e12).div(2e12));
     }
+
+    function tradeinVoucher(uint256 tokenId_, uint32 amount_) external virtual onlyIfTradable {
+        require(amount_ > 0, "Amount must be non-zero.");
+        require(balanceOf(msg.sender) >= amount_, "Insufficient tokens to burn.");
+
+        (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
+
+        //99% for supplier
+        _updateSupplierFee(reimburseAmount.mul(0.99e12).div(1e12));
+        _addEscrow(amount_,  reimburseAmount.sub(fee));
+        _burn(msg.sender, amount_);
+        tradeinCount = tradeinCount + amount_;
+
+        _updateSellStaking(amount_, true, true, 0);
+
+        emit Tradein(msg.sender, amount_);
+    }
+
 
     function getCurrentPriceByIds(uint256 ids_) external view virtual returns (uint256) {
         require(_tokenUtils.isSupportIds(ids_), 'not support');
@@ -281,6 +286,7 @@ contract ProductTokenV1 is ProductToken {
     }
 
     function claimSupplier(uint256 amount_) external {
+        require(supplier.wallet!=address(0), "wallet is invalid");
         require(msg.sender == supplier.wallet, "The address is not allowed");
         address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
         IERC20 high = IERC20(highAddress);
@@ -332,16 +338,6 @@ contract ProductTokenV1 is ProductToken {
         payable(msg.sender).transfer(value_);
     }
 
-    function depositERC20(uint256 ids_, uint256 amount_) external virtual onlyOwner{
-        require(_tokenUtils.isValidIds(ids_), 'not invalid id');
-        require(amount_ > 0, "invalid value");
-
-        address highAddress = _tokenUtils.getAddressByIds(ids_);
-        IERC20 instance = IERC20(highAddress);
-        bool success = instance.transferFrom(msg.sender, address(this), amount_);
-        require(success, "adding liquidity failed");
-    }
-
     function withdrawERC20(uint256 ids_, uint256 amount_, address to_) external virtual onlyOwner{
         require(_tokenUtils.isValidIds(ids_), 'not invalid id');
         require(to_ != address(0), "invalid address");
@@ -351,8 +347,12 @@ contract ProductTokenV1 is ProductToken {
         instance.transfer(to_, amount_);
     }
 
-    function getuserInfo(address addr_) external view returns( UserInfo memory) {
+    function getUserInfo(address addr_) external view returns( UserInfo memory) {
         require(addr_ != address(0), 'invalid address');
         return userInfo[addr_];
+    }
+
+    function getPoolInfo() external view returns( PoolInfo memory) {
+        return poolInfo;
     }
 }
