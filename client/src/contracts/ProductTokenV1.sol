@@ -96,14 +96,12 @@ contract ProductTokenV1 is ProductToken {
             poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
             if(ids_ == INDEX_HIGH) {
                 price = _tokenUtils.toOrigValue(price, INDEX_HIGH);
-                //清算之前的給用戶
                 UserInfo storage user = userInfo[msg.sender];
                 PoolInfo storage pool = poolInfo;
                 uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
                 if(pending > 0) {
                     instance.transfer(msg.sender, pending);
                 }
-                // 從新計算
                 poolInfo.amount = poolInfo.amount.add(price);
                 updatePool();
                 _updateUserInfo(price);
@@ -141,12 +139,13 @@ contract ProductTokenV1 is ProductToken {
 
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
 
-        //99% for supplier
-        _updateSupplierFee(reimburseAmount.mul(0.99e12).div(1e12));
+        uint256 tradinReturn = calculateTradinReturn(amount_);
+        _updateSupplierFee(fee.mul(1e13).div(2e13).add(tradinReturn));
         reimburseAmount = reimburseAmount.sub(fee);
         _addEscrow(amount_,  _tokenUtils.toOrigValue(reimburseAmount, INDEX_HIGH));
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
+        tradeinReserveBalance = tradeinReserveBalance.add(tradinReturn);
 
         _updateSellStaking(amount_, isHarvest_, false, 0);
 
@@ -262,14 +261,14 @@ contract ProductTokenV1 is ProductToken {
         require(balanceOf(msg.sender) >= amount_, "Insufficient tokens to burn.");
 
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
-
-        //99% for supplier
-        _updateSupplierFee(reimburseAmount.mul(0.99e12).div(1e12));
+        uint256 tradinReturn = calculateTradinReturn(amount_);
+        _updateSupplierFee(fee.mul(1e12).div(2e12).add(tradinReturn));
         _addEscrow(amount_,  reimburseAmount.sub(fee));
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
+        tradeinReserveBalance = tradeinReserveBalance.add(tradinReturn);
 
-        _updateSellStaking(amount_, true, true, 0);
+        _updateSellStaking(amount_, true, true, tokenId_);
 
         emit Tradein(msg.sender, amount_);
     }

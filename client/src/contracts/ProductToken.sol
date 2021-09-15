@@ -25,6 +25,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
 
   bool private isTradable;
   uint256 public reserveBalance;      // amount of liquidity in the pool
+  uint256 public tradeinReserveBalance;      // amount of liquidity in the pool
   uint32 public reserveRatio;         // computed from the exponential factor in the
   uint32 public maxTokenCount;        // max token count, determined by the supply of our physical product
   uint32 public tradeinCount;         // number of tokens burned through redeeming procedure. This will drive price up permanently
@@ -73,6 +74,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     require(_reserveRatio > 0, "Invalid reserve ratio");
     bondingCurve = BancorBondingCurveV1Interface(_bondingCurveAddress);
     reserveBalance = _baseReserve;
+    tradeinReserveBalance = _baseReserve;
     supplyOffset = _supplyOffset;
     reserveRatio = _reserveRatio;
     maxTokenCount = _maxTokenCount;
@@ -279,6 +281,15 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     emit Sell(msg.sender, _amount, reimburseAmount);
     return (reimburseAmount.sub(fee), fee);
   }
+
+  function calculateTradinReturn(uint32 _amount)
+    public view virtual returns (uint256)
+  {
+  	require(_amount > 0, "invalid amount");
+    uint32 supply = uint32(uint256(_amount).add(uint256(tradeinCount)).add(uint256(supplyOffset)));
+  	return bondingCurve.calculateSaleReturn(supply, tradeinReserveBalance, reserveRatio, _amount);
+  }
+
 
   /**
    * @dev used to update the status of redemption to "User Complete" after an escrow process has been started.
