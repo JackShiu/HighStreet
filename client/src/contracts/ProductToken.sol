@@ -330,12 +330,12 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     // override
   }
 
-  function setManager(address addr_) external onlyOwner {
+  function setManager(address addr_) external virtual onlyOwner {
     require(addr_ != address(0), 'invalid address');
     _manager = addr_;
   }
 
-  function getManager() external view returns(address) {
+  function getManager() external view  virtual returns(address) {
     return _manager;
   }
 

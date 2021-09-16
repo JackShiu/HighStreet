@@ -1,0 +1,369 @@
+{
+  "contractName": "TokenFactoryProxy",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.8.3+commit.8d00100c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"details\":\"This is the factory smart contract that is responsible for token creation and address management.\",\"kind\":\"dev\",\"methods\":{},\"title\":\"TokenFactoryProxy\",\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/TokenFactoryProxy.sol\":\"TokenFactoryProxy\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":50},\"remappings\":[]},\"sources\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/TokenFactoryProxy.sol\":{\"keccak256\":\"0x723240c76dd6b5abc0dfc3111858033b1fcd0f1d7b3ed065d53e1a4d78101d13\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://945542568dbe32854917cbdde2f689931d3cd2d2609e3ee7150d77b3d7b9e706\",\"dweb:/ipfs/QmRdJ7yK7zPrqpKWvarUH9kuX65paCsdyup5Tyv3E69wBA\"]},\"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\":{\"keccak256\":\"0xc68cad93ce702131a09334e8705d4af062278defa99627a2c94685fb96ff8cc4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6839a7f9fdb061559b6192c64fc919c83cad99bf0ff4663f249f8409d9f88abf\",\"dweb:/ipfs/QmS6DzcqHkD8TipTTZ94FthQjBhX81sfYtAQQC9Qzifxxm\"]},\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"keccak256\":\"0x60aac6a853246704b017e55f9d3b456debfd0a7f49dd9a99e7113bed03ef0696\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://67add465d6dec3198061b5fb7ed4d8b0e1a26f0c0200115d338241ca74a693de\",\"dweb:/ipfs/Qmerko5uM4L1jwJKK7yPiqTq1QTgd6cbNEy6ffmTLBj6MW\"]},\"@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol\":{\"keccak256\":\"0x5642ae1d6b33c5c0b71a8412c6c64cbcf2468b84a002bee3e33cdb5644d25cdb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://07ba474854eacf022fca2ab63af2b09653f476a9ef2d144ea3d022a0c0b92726\",\"dweb:/ipfs/QmVNfrArMejFSrPMktAtDte64FJ2fGPQHqgSXDz2SH6dse\"]},\"@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol\":{\"keccak256\":\"0x8e9eb503de1189f50c5f16fef327da310b11898d6b9ab3ca937df07c35233b9e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9631a7abcad07067f268b6295668a287e205ea9a8dc0fca02c2bf4db6c39431d\",\"dweb:/ipfs/QmUYFfB2AngTZLEsah4u8Z44riaB6yWkUXeasi1oG7ipfS\"]},\"@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol\":{\"keccak256\":\"0xca2eb23a188f213d914fad982985d07e491dbc9960a387d4469bfce5c48911b1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7a1e908606999ea3e1462e8122f0bcef4e0afe1fa5a578168587278bc4ceb352\",\"dweb:/ipfs/QmQ2BaCjVQXMT1qE6M2XJ9A669aeScTySfH5zGGqwPJyJt\"]},\"@openzeppelin/contracts/proxy/ERC1967/ERC1967Upgrade.sol\":{\"keccak256\":\"0x91a577fa9cbb3fda527eefa0e4ab327bbd9949bf5d358be286a33623ed69f76d\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://e5d416a3eef7a566c7497998f33be388b382bd71b2b048f9ef7aa6fc8e78443b\",\"dweb:/ipfs/QmXXT4ZEec3JKBwb5gm28wPYqzudDp2pGxdiDC1zME5Efo\"]},\"@openzeppelin/contracts/proxy/Proxy.sol\":{\"keccak256\":\"0xc706395df88dc1d459f21e51c57ab8820af80d1e8c3c14933a651794d78a429f\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2c19f30fd9c2ad752e3383fe5861655abb9d74c41cdc8ddbb49e5722ac4b8dd5\",\"dweb:/ipfs/QmXUePYiTMoDuqvghPGJfgjPFjjixan2DXreLGiuPDv8AX\"]},\"@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol\":{\"keccak256\":\"0x617614c3aaada8d7a901da2126a7407ae7e06b0410807f5c1b49cea9076199e9\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://92619e75338160854fe67592bdb4facf63303fa0c817bfddc6fd90df02557831\",\"dweb:/ipfs/QmRibp4sJayHoKeyuymBUy11zjgaoGz2hkt6Ejy9JUjCCR\"]},\"@openzeppelin/contracts/proxy/beacon/IBeacon.sol\":{\"keccak256\":\"0x5615339d191e77be7e46319b67856f9355786f705b7b3c4a7237ab70c1864ab1\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://b7c6a52e49bd374890523443ac6e20fa0ca09ff8d65d5adbca6f2c8733758eea\",\"dweb:/ipfs/QmXXccov4bGGVqg6BwYc8QU9JwCNHmVYePj1ZYpgkxTbpF\"]},\"@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol\":{\"keccak256\":\"0x291ed918ed339ac770111acd295a69273b851e62804752c4fd1e54d148877314\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://0139c2b8120005e97d0306f390770984623ae7bb301f56f4b3b6f628fbb0a1b2\",\"dweb:/ipfs/QmNMpigh1EqkwauSgPQotjz9uLEXsq6xH2wvfKpegoxr35\"]},\"@openzeppelin/contracts/utils/Address.sol\":{\"keccak256\":\"0x069b2631bb5b5193a58ccf7a06266c7361bd2c20095667af4402817605627f45\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6a4c96fafff76deda5697c3c5c98cade6e6e1b178254544c106bf360c079ce4e\",\"dweb:/ipfs/QmXmxubE3jnatFgZuN8ay1VV6hZ8WRmhvUjNpeVjki15HX\"]},\"@openzeppelin/contracts/utils/StorageSlot.sol\":{\"keccak256\":\"0x5d15d280d1f868f59a8264dc73f7ea8c51f10d78aac864b2f2ad29412d187ff5\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://d7c5c1fe2972d97dca1af03884c78315eb261bb486bacfadd04b0f440fdcfd6e\",\"dweb:/ipfs/QmTNTSdUSzUKWEeTH2A37RDXJ2Xf5jfTTpLuy1oudPPE8N\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea2646970667358221220104166fd448166a9c85c2118f3aa8ef56996d5834a79cfadd529d71735d13dc664736f6c63430008030033",
+  "deployedBytecode": "0x6080604052600080fdfea2646970667358221220104166fd448166a9c85c2118f3aa8ef56996d5834a79cfadd529d71735d13dc664736f6c63430008030033",
+  "immutableReferences": {},
+  "generatedSources": [],
+  "deployedGeneratedSources": [],
+  "sourceMap": "735:32:17:-:0;;;;;;;;;;;;;;;;;;;",
+  "deployedSourceMap": "735:32:17:-:0;;;;;",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity ^0.8.2;\n\nimport \"@openzeppelin/contracts/proxy/beacon/IBeacon.sol\";\nimport \"@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol\";\nimport \"@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol\";\nimport \"@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol\";\nimport \"@openzeppelin/contracts/utils/Address.sol\";\nimport \"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\";\nimport \"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\";\n\n/// @title TokenFactoryProxy\n/// @dev This is the factory smart contract that is responsible for token creation and address management.\n// contract TokenFactoryProxy is Initializable, ERC1967Proxy, OwnableUpgradeable {\ncontract TokenFactoryProxy {\n\n\n}\n",
+  "sourcePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/TokenFactoryProxy.sol",
+  "ast": {
+    "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/TokenFactoryProxy.sol",
+    "exportedSymbols": {
+      "Address": [
+        9875
+      ],
+      "AddressUpgradeable": [
+        7824
+      ],
+      "BeaconProxy": [
+        8835
+      ],
+      "ContextUpgradeable": [
+        7869
+      ],
+      "ERC1967Proxy": [
+        8344
+      ],
+      "ERC1967Upgrade": [
+        8701
+      ],
+      "IBeacon": [
+        8845
+      ],
+      "Initializable": [
+        6974
+      ],
+      "OwnableUpgradeable": [
+        6927
+      ],
+      "Proxy": [
+        8753
+      ],
+      "StorageSlot": [
+        9958
+      ],
+      "TokenFactoryProxy": [
+        5925
+      ],
+      "UUPSUpgradeable": [
+        8969
+      ]
+    },
+    "id": 5926,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5916,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:17"
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "file": "@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "id": 5917,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8846,
+        "src": "58:58:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "file": "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "id": 5918,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8836,
+        "src": "117:62:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "file": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "id": 5919,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8345,
+        "src": "180:64:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol",
+        "file": "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol",
+        "id": 5920,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8970,
+        "src": "245:65:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/utils/Address.sol",
+        "file": "@openzeppelin/contracts/utils/Address.sol",
+        "id": 5921,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 9876,
+        "src": "311:51:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "file": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "id": 5922,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 6975,
+        "src": "363:75:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        "file": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        "id": 5923,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 6928,
+        "src": "439:75:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 5924,
+          "nodeType": "StructuredDocumentation",
+          "src": "516:136:17",
+          "text": "@title TokenFactoryProxy\n @dev This is the factory smart contract that is responsible for token creation and address management."
+        },
+        "fullyImplemented": true,
+        "id": 5925,
+        "linearizedBaseContracts": [
+          5925
+        ],
+        "name": "TokenFactoryProxy",
+        "nameLocation": "744:17:17",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 5926,
+        "src": "735:32:17"
+      }
+    ],
+    "src": "33:735:17"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/TokenFactoryProxy.sol",
+    "exportedSymbols": {
+      "Address": [
+        9875
+      ],
+      "AddressUpgradeable": [
+        7824
+      ],
+      "BeaconProxy": [
+        8835
+      ],
+      "ContextUpgradeable": [
+        7869
+      ],
+      "ERC1967Proxy": [
+        8344
+      ],
+      "ERC1967Upgrade": [
+        8701
+      ],
+      "IBeacon": [
+        8845
+      ],
+      "Initializable": [
+        6974
+      ],
+      "OwnableUpgradeable": [
+        6927
+      ],
+      "Proxy": [
+        8753
+      ],
+      "StorageSlot": [
+        9958
+      ],
+      "TokenFactoryProxy": [
+        5925
+      ],
+      "UUPSUpgradeable": [
+        8969
+      ]
+    },
+    "id": 5926,
+    "license": "MIT",
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 5916,
+        "literals": [
+          "solidity",
+          "^",
+          "0.8",
+          ".2"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:23:17"
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "file": "@openzeppelin/contracts/proxy/beacon/IBeacon.sol",
+        "id": 5917,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8846,
+        "src": "58:58:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "file": "@openzeppelin/contracts/proxy/beacon/BeaconProxy.sol",
+        "id": 5918,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8836,
+        "src": "117:62:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "file": "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol",
+        "id": 5919,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8345,
+        "src": "180:64:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol",
+        "file": "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol",
+        "id": 5920,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 8970,
+        "src": "245:65:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts/utils/Address.sol",
+        "file": "@openzeppelin/contracts/utils/Address.sol",
+        "id": 5921,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 9876,
+        "src": "311:51:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "file": "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol",
+        "id": 5922,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 6975,
+        "src": "363:75:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "absolutePath": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        "file": "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol",
+        "id": 5923,
+        "nameLocation": "-1:-1:-1",
+        "nodeType": "ImportDirective",
+        "scope": 5926,
+        "sourceUnit": 6928,
+        "src": "439:75:17",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": {
+          "id": 5924,
+          "nodeType": "StructuredDocumentation",
+          "src": "516:136:17",
+          "text": "@title TokenFactoryProxy\n @dev This is the factory smart contract that is responsible for token creation and address management."
+        },
+        "fullyImplemented": true,
+        "id": 5925,
+        "linearizedBaseContracts": [
+          5925
+        ],
+        "name": "TokenFactoryProxy",
+        "nameLocation": "744:17:17",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 5926,
+        "src": "735:32:17"
+      }
+    ],
+    "src": "33:735:17"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.8.3+commit.8d00100c.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.4.0",
+  "updatedAt": "2021-09-16T10:31:19.682Z",
+  "devdoc": {
+    "details": "This is the factory smart contract that is responsible for token creation and address management.",
+    "kind": "dev",
+    "methods": {},
+    "title": "TokenFactoryProxy",
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  }
+}

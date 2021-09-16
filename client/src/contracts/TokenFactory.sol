@@ -77,16 +77,8 @@ contract TokenFactory is Initializable, UUPSUpgradeable, OwnableUpgradeable {
 	}
 
 	/**
-   * @dev necessary function override from UUPSUpgradeable proxy contract.            	
+   * @dev necessary function override from UUPSUpgradeable proxy contract.
   */
 	function _authorizeUpgrade(address) internal override onlyOwner {}
 
-	/**
-   * @dev Return address of the current owner. This is used in testing only.
-   *
-   * @return address              address of the owner.
-  */
-	// function getOwner() public returns (address) {
-	// 	return owner();
-	// }
 }

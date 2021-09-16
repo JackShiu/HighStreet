@@ -409,7 +409,4 @@ contract('productTokenV1 flow check', function (accounts) {
         assert.equal(remainValue.toString(), balanceAfter.toString(), "remain supplier high should be right");
 
     });
-
-    //user staking...
-    //deposit ether/dai/high
 })

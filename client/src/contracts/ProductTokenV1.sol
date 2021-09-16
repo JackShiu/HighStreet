@@ -1,6 +1,5 @@
 pragma solidity ^0.8.3;
 
-import {AggregatorV3Interface as AggregatorV3Interface_v08 } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "./ProductToken.sol";
@@ -24,7 +23,6 @@ contract ProductTokenV1 is ProductToken {
     struct UserInfo {
         uint256 amount;
         uint256 rewardDebt;
-        uint256 rewardPending;
         uint256[] records;
     }
     struct PoolInfo {
@@ -49,7 +47,7 @@ contract ProductTokenV1 is ProductToken {
     mapping (address => UserInfo) public userInfo;
     ITokenUtils private _tokenUtils;
 
-    function setupTokenUtils(address addr_) external onlyOwner {
+    function setupTokenUtils(address addr_) external virtual onlyOwner {
         require(addr_ != address(0));
         _tokenUtils = ITokenUtils(addr_);
     }
@@ -119,7 +117,7 @@ contract ProductTokenV1 is ProductToken {
 
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
-        _updateSellStaking(amount_, isHarvest_, false, 0);
+        _updateSellStaking(amount_, isHarvest_);
 
         uint256 accValue = _tokenUtils.toOrigValue(price, INDEX_HIGH);
         bool success = IERC20(highAddress).transfer(msg.sender, accValue);
@@ -147,7 +145,7 @@ contract ProductTokenV1 is ProductToken {
         tradeinCount = tradeinCount + amount_;
         tradeinReserveBalance = tradeinReserveBalance.add(tradinReturn);
 
-        _updateSellStaking(amount_, isHarvest_, false, 0);
+        _updateSellStaking(amount_, isHarvest_);
 
         emit Tradein(msg.sender, amount_);
     }
@@ -161,7 +159,7 @@ contract ProductTokenV1 is ProductToken {
         poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(poolInfo.tokenReward.mul(1e12).div(supply));
     }
 
-    function _updateSellStaking(uint32 amount_, bool isHarvest_, bool isVoucher_, uint256 tokenId_) internal virtual {
+    function _updateSellStaking(uint32 amount_, bool isHarvest_) internal virtual {
         if(userInfo[msg.sender].amount > 0) {
             address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
             UserInfo storage user = userInfo[msg.sender];
@@ -180,11 +178,7 @@ contract ProductTokenV1 is ProductToken {
 
                 poolInfo.amount = poolInfo.amount.sub(value);
                 if(pending > 0) {
-                    if(isVoucher_) {
-                        voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
-                    } else {
-                        IERC20(highAddress).transfer(msg.sender, pending);
-                    }
+                    IERC20(highAddress).transfer(msg.sender, pending);
 
                 }
                 user.amount = user.amount.sub(value);
@@ -200,80 +194,6 @@ contract ProductTokenV1 is ProductToken {
         user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
     }
 
-    function setupVoucher(address addr_, uint256 tokenId_, bool enable_) external onlyOwner{
-        require(addr_ != address(0), 'invalid address');
-        voucher.addr = addr_;
-        voucher.instance = IVNFT(addr_);
-        voucher.tokenId = tokenId_;
-        voucher.isEnable = enable_;
-    }
-
-    function pauseVoucher(bool enable_) external onlyOwner {
-        voucher.isEnable = enable_;
-    }
-
-    function claimVoucher(uint256 tokenId_) external onlyOwner{
-        require(tokenId_ != 0, 'invalid id');
-        uint256 amount = voucher.instance.unitsInToken(voucher.tokenId);
-        voucher.instance.transferFrom(address(this), owner(), voucher.tokenId , tokenId_, amount);
-    }
-
-    function buyByVoucher(uint256 tokenId_, uint256 maxPrice_) external virtual onlyIfTradable{
-        require(voucher.isEnable, 'unable to use voucher');
-        require(tokenId_ >= 0, "Invalid id");
-        require(maxPrice_ > 0, "invalid max price");
-        IVNFT instance = voucher.instance;
-        instance.transferFrom(msg.sender, address(this), tokenId_, voucher.tokenId, maxPrice_);
-
-        (uint256 amount,uint256 change, uint price, uint256 fee)  = _buy(maxPrice_);
-        if (amount > 0) {
-            if(change > 0) {
-                instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, change);
-            }
-            _updateSupplierFee(fee.mul(1e12).div(8e12));
-            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
-            UserInfo storage user = userInfo[msg.sender];
-            PoolInfo storage pool = poolInfo;
-            uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-            if(pending > 0) {
-                instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
-            }
-            poolInfo.amount = poolInfo.amount.add(price);
-            updatePool();
-            _updateUserInfo(price);
-        } else {
-            instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, maxPrice_);
-        }
-    }
-
-    function sellByVoucher(uint256 tokenId_, uint32 amount_) external virtual onlyIfTradable{
-        require(voucher.isEnable, 'unable to use voucher');
-        (uint256 price, uint256 fee )= _sellForAmount(amount_);
-
-        _updateSellStaking(amount_, true, true, tokenId_);
-
-        voucher.instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, price);
-        _updateSupplierFee(fee.mul(1e12).div(2e12));
-    }
-
-    function tradeinVoucher(uint256 tokenId_, uint32 amount_) external virtual onlyIfTradable {
-        require(amount_ > 0, "Amount must be non-zero.");
-        require(balanceOf(msg.sender) >= amount_, "Insufficient tokens to burn.");
-
-        (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
-        uint256 tradinReturn = calculateTradinReturn(amount_);
-        _updateSupplierFee(fee.mul(1e12).div(2e12).add(tradinReturn));
-        _addEscrow(amount_,  reimburseAmount.sub(fee));
-        _burn(msg.sender, amount_);
-        tradeinCount = tradeinCount + amount_;
-        tradeinReserveBalance = tradeinReserveBalance.add(tradinReturn);
-
-        _updateSellStaking(amount_, true, true, tokenId_);
-
-        emit Tradein(msg.sender, amount_);
-    }
-
-
     function getCurrentPriceByIds(uint256 ids_) external view virtual returns (uint256) {
         require(_tokenUtils.isSupportIds(ids_), 'not support');
         return _tokenUtils.toOrigValue(getCurrentPrice(), ids_);
@@ -284,7 +204,7 @@ contract ProductTokenV1 is ProductToken {
         supplier.wallet = wallet_;
     }
 
-    function claimSupplier(uint256 amount_) external {
+    function claimSupplier(uint256 amount_) external virtual {
         require(supplier.wallet!=address(0), "wallet is invalid");
         require(msg.sender == supplier.wallet, "The address is not allowed");
         address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
@@ -297,7 +217,7 @@ contract ProductTokenV1 is ProductToken {
         }
     }
 
-    function _updateSupplierFee(uint256 fee) internal {
+    function _updateSupplierFee(uint256 fee) internal virtual {
         if( fee > 0 ) {
             uint256 charge = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
             supplier.amount = supplier.amount.add(charge);
@@ -318,7 +238,7 @@ contract ProductTokenV1 is ProductToken {
     * @param value_       The market value of the token being redeemed
     *
     */
-    function _refund(address buyer_, uint256 value_) internal override {
+    function _refund(address buyer_, uint256 value_) internal virtual override {
         address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
 
         bool success = IERC20(highAddress).transfer(buyer_, value_);
@@ -346,12 +266,16 @@ contract ProductTokenV1 is ProductToken {
         instance.transfer(to_, amount_);
     }
 
-    function getUserInfo(address addr_) external view returns( UserInfo memory) {
+    function getUserInfo(address addr_) external view virtual returns( UserInfo memory) {
         require(addr_ != address(0), 'invalid address');
         return userInfo[addr_];
     }
 
-    function getPoolInfo() external view returns( PoolInfo memory) {
+    function getPoolInfo() external view virtual returns( PoolInfo memory) {
         return poolInfo;
+    }
+
+    function getSupplierInfo() external view virtual returns( supplierInfo memory) {
+        return supplier;
     }
 }
