@@ -6,7 +6,7 @@ const HSToken = artifacts.require("HSToken");
 const TokenV0 = artifacts.require("ProductTokenV0");
 const TokenV1 = artifacts.require("ProductTokenV1");
 const Factory = artifacts.require("TokenFactory");
-const ERC1967Proxy = artifacts.require('ERC1967Proxy');
+const TokenFactoryProxy = artifacts.require('TokenFactoryProxy');
 const BancorBondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('UpgradeableBeacon');
 const TokenUtils = artifacts.require('TokenUtils');
@@ -40,17 +40,11 @@ module.exports = async function (deployer, network, accounts ) {
 		await deployer.deploy(TokenUtils, {from:owner, overwrite: false});
 		const tokenUtils = await TokenUtils.deployed();
 
-		// TEST +++++
-		//1. upgradeable contract
-		// const data = factoyImpl.contract.methods.initialize(beacon.address).encodeABI();
-		// await deployer.deploy(ERC1967Proxy,factoyImpl.address, data);
-		// const factoyProxy = await ERC1967Proxy.deployed();
-		// const factoryInstance = await Factory.at(factoyProxy.address);
-		// TEST ==========
-		//2.  factory isn't upgradeable
-		const factoryInstance = factoyImpl;
-		factoyImpl.initialize(beacon.address);
-		// TEST -------
+
+		const data = factoyImpl.contract.methods.initialize(beacon.address).encodeABI();
+		await deployer.deploy(TokenFactoryProxy, factoyImpl.address, data);
+		const factoyProxy = await TokenFactoryProxy.deployed();
+		const factoryInstance = await Factory.at(factoyProxy.address);
 
 		let isUpgradeToV1 =false;
 		if(isUpgradeToV1) {
@@ -66,7 +60,7 @@ module.exports = async function (deployer, network, accounts ) {
 			const max = '500';
 			const offset = '10';
 			const baseReserve = web3.utils.toWei('0.33', 'ether');
-			const val = tokenImplV1
+			const val = tokenImplV0
 							.contract
 							.methods
 							.initialize('HighGO', 'HG', BondingCurveAddress, exp, max, offset, baseReserve).encodeABI();

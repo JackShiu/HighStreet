@@ -1,9 +1,9 @@
 {
   "contractName": "ProductTokenDestroy",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.3+commit.8d00100c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol\":\"ProductTokenDestroy\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":50},\"remappings\":[]},\"sources\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Escrow.sol\":{\"keccak256\":\"0x5ca4d5642d652219383b057a0b385381c0bf4f44f6bd12b494d60b1b787b4c08\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2f8a87154744164becaea20a8b8c0c7ac171c1638d095b663c2dc5eefd411aba\",\"dweb:/ipfs/QmeiVVRNFP1Rkb7ccfYJX2h9onAbXLo3do4oCyNvamEGAd\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol\":{\"keccak256\":\"0x4681b15bfb17217c81bfd80d0935190d1adc5ceed8ce51bcd662bfe3b223222f\",\"urls\":[\"bzz-raw://4db365ee69f38329d9d790b3be3fe2967a1ac0c251ab20d7fba49ef8ea0429a8\",\"dweb:/ipfs/QmUJCWWnc2KHVuMCGc7UFhDH3JGBhx6ZvQt9auYNs4mPzQ\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Power.sol\":{\"keccak256\":\"0x7b165e5f290a746cf635acf51166fcbec267b63e2d7ab0ec5af450535378de88\",\"urls\":[\"bzz-raw://336a0f1a1d87953be68d218f9d2688456959cb9e213fdbc0de29498a317e8d53\",\"dweb:/ipfs/QmTchn9DCCTccojvqwZ2q8SbLJB48QxpWMae5WCxgQBiAt\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/ProductToken.sol\":{\"keccak256\":\"0x1ac0a687504066e87b6afd275378782fc13acf21de724ad4f325c94735037d8e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://39dc7ada8bf1ea1b96c714c28b69a879a88615d6b9af827ae16cb64a3c6f6916\",\"dweb:/ipfs/QmTmTLauYux8anDt2t3JmYDbqojbxH9QK3WUYN8ab9T5uS\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/ProductTokenV1.sol\":{\"keccak256\":\"0xfbbf52ba4e29d6b0cdf0b6c2e7fd5eb62b32c5f090808277b6c98e6b27463df6\",\"urls\":[\"bzz-raw://02ba3e936ac637f1bd298f28049c77281b7cf1f845efb22a858a4210ffb856ed\",\"dweb:/ipfs/QmNMqzt19ggfTPdFcMwhterRQJca9eythiaryTxWtrJC2e\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/BancorBondingCurveV1Interface.sol\":{\"keccak256\":\"0x60c6f8766f51ab50bb0a9e7b43d155ff29af4fda99ea08e61211951204eebd4a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7002efeb9ac616251820847594f6d3ca021a40047c26f1796fab94d1023315b2\",\"dweb:/ipfs/QmY7gVeVmauAMut7pDJ2rRP5tGBk1tEiXzwYo4CCcQ453H\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/ITokenUtils.sol\":{\"keccak256\":\"0xb3ccee7bb6c8da33b7cbfdb32929e8c8d8fbde332599b7ce5428280490e1717a\",\"urls\":[\"bzz-raw://7416a9a1cd4ee11c0164a517ceb11d20033d9c5d7020bff7bed00ba3b2769301\",\"dweb:/ipfs/QmUCNaDnTGxbazGXv8JEiks2m4DVhLzMDTFVjBGzjg7GvW\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/IVNFT.sol\":{\"keccak256\":\"0xa316e7d14797f6fbbdba8aec00ea204171387357ba794c6eb8af2e6ce9803999\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6f19b192cf7dfa726db429f27c125b9dc14ed2ec7a988824b87d729f94526c3a\",\"dweb:/ipfs/QmfGkxafLpsq5iFZgo2xhruUpe2V6D4n4mbn96LvkyPFDj\"]},\"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\":{\"keccak256\":\"0xc68cad93ce702131a09334e8705d4af062278defa99627a2c94685fb96ff8cc4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6839a7f9fdb061559b6192c64fc919c83cad99bf0ff4663f249f8409d9f88abf\",\"dweb:/ipfs/QmS6DzcqHkD8TipTTZ94FthQjBhX81sfYtAQQC9Qzifxxm\"]},\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"keccak256\":\"0x60aac6a853246704b017e55f9d3b456debfd0a7f49dd9a99e7113bed03ef0696\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://67add465d6dec3198061b5fb7ed4d8b0e1a26f0c0200115d338241ca74a693de\",\"dweb:/ipfs/Qmerko5uM4L1jwJKK7yPiqTq1QTgd6cbNEy6ffmTLBj6MW\"]},\"@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol\":{\"keccak256\":\"0x2f5ea7cdb9dfa192ca6aee45fda92edabc89ee373c33d783d18413ebecd8d79c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f5decb68ac6264f3a0ee1c4e1f59fdfe11f4d49f05c5c271dfd52664b4e397f9\",\"dweb:/ipfs/QmUKzH96sRkwHnT11zqUNgov1w4NnMCaumiTc4ixKgYA3R\"]},\"@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol\":{\"keccak256\":\"0x8d4a0f2b5b760b5e2c19ed3c108d83897a4dfd5bfed97a93867918df19191e5e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7787f0e6d168740118ca2fc09a35e33644656f6998b124ab09a5fe790d5388f7\",\"dweb:/ipfs/QmeRPExxvGzci1QVdGpvoRWynS6xyczVXYNVqHLoMQaaMU\"]},\"@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol\":{\"keccak256\":\"0x5642ae1d6b33c5c0b71a8412c6c64cbcf2468b84a002bee3e33cdb5644d25cdb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://07ba474854eacf022fca2ab63af2b09653f476a9ef2d144ea3d022a0c0b92726\",\"dweb:/ipfs/QmVNfrArMejFSrPMktAtDte64FJ2fGPQHqgSXDz2SH6dse\"]},\"@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol\":{\"keccak256\":\"0x8e9eb503de1189f50c5f16fef327da310b11898d6b9ab3ca937df07c35233b9e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9631a7abcad07067f268b6295668a287e205ea9a8dc0fca02c2bf4db6c39431d\",\"dweb:/ipfs/QmUYFfB2AngTZLEsah4u8Z44riaB6yWkUXeasi1oG7ipfS\"]},\"@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol\":{\"keccak256\":\"0x1d84970ad956bd24b298d0876ff96e1e2125daead8a6791c5c7753e83123b724\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://70ce1561c46b66e51521813d10ba0c928ea185cc7ebd63a80a73e0f704f3fd77\",\"dweb:/ipfs/QmXgsPb22AV46v1k6w8AR3mYavteY7zWGUB26LKLvY4jqM\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9ec48567e7ad06acb670980d5cdf3fd7f3949bf12894f02d68c3bb43e75aa84f\",\"dweb:/ipfs/QmaG3R2J9cz92YT77vFjYrjMNU2wHp4ypwYD62HqDUqS5U\"]}},\"version\":1}",
-  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212201d16d05530db8cab28b033d2a9b036220914960d21ee7e81db376caad957603e64736f6c63430008030033",
-  "deployedBytecode": "0x6080604052600080fdfea26469706673582212201d16d05530db8cab28b033d2a9b036220914960d21ee7e81db376caad957603e64736f6c63430008030033",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.3+commit.8d00100c\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol\":\"ProductTokenDestroy\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":50},\"remappings\":[]},\"sources\":{\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Escrow.sol\":{\"keccak256\":\"0x5ca4d5642d652219383b057a0b385381c0bf4f44f6bd12b494d60b1b787b4c08\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://2f8a87154744164becaea20a8b8c0c7ac171c1638d095b663c2dc5eefd411aba\",\"dweb:/ipfs/QmeiVVRNFP1Rkb7ccfYJX2h9onAbXLo3do4oCyNvamEGAd\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol\":{\"keccak256\":\"0x4681b15bfb17217c81bfd80d0935190d1adc5ceed8ce51bcd662bfe3b223222f\",\"urls\":[\"bzz-raw://4db365ee69f38329d9d790b3be3fe2967a1ac0c251ab20d7fba49ef8ea0429a8\",\"dweb:/ipfs/QmUJCWWnc2KHVuMCGc7UFhDH3JGBhx6ZvQt9auYNs4mPzQ\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Power.sol\":{\"keccak256\":\"0x7b165e5f290a746cf635acf51166fcbec267b63e2d7ab0ec5af450535378de88\",\"urls\":[\"bzz-raw://336a0f1a1d87953be68d218f9d2688456959cb9e213fdbc0de29498a317e8d53\",\"dweb:/ipfs/QmTchn9DCCTccojvqwZ2q8SbLJB48QxpWMae5WCxgQBiAt\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/ProductToken.sol\":{\"keccak256\":\"0xfa5111750df0cd63cf109d231cedc8e452a5c67b1afb35652710dcc6cbbdb010\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://5730bc337c37889778bf91e828e3c51c07631cddb678ea0284d79e1fb28034f3\",\"dweb:/ipfs/QmafzMZUTb3uMjHhEsH4mdf3NjwNcWgaABZZeQ6NubbyT7\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/ProductTokenV1.sol\":{\"keccak256\":\"0x703f8576a131a3fdef4de520e6f5a7eb3525f1ecaf07c036b1d1b203df07c29b\",\"urls\":[\"bzz-raw://f42e84e1ee6a91d0cd14ed05c481dd80c9dc1993b898ddf1f0cf7b5e8c1112bc\",\"dweb:/ipfs/QmcBYU1hQw6ieVRRTDe8Bvx9uZnttRsU9xr8VgrKoNheCw\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/BancorBondingCurveV1Interface.sol\":{\"keccak256\":\"0x60c6f8766f51ab50bb0a9e7b43d155ff29af4fda99ea08e61211951204eebd4a\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7002efeb9ac616251820847594f6d3ca021a40047c26f1796fab94d1023315b2\",\"dweb:/ipfs/QmY7gVeVmauAMut7pDJ2rRP5tGBk1tEiXzwYo4CCcQ453H\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/ITokenUtils.sol\":{\"keccak256\":\"0xb3ccee7bb6c8da33b7cbfdb32929e8c8d8fbde332599b7ce5428280490e1717a\",\"urls\":[\"bzz-raw://7416a9a1cd4ee11c0164a517ceb11d20033d9c5d7020bff7bed00ba3b2769301\",\"dweb:/ipfs/QmUCNaDnTGxbazGXv8JEiks2m4DVhLzMDTFVjBGzjg7GvW\"]},\"/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/interface/IVNFT.sol\":{\"keccak256\":\"0xa316e7d14797f6fbbdba8aec00ea204171387357ba794c6eb8af2e6ce9803999\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6f19b192cf7dfa726db429f27c125b9dc14ed2ec7a988824b87d729f94526c3a\",\"dweb:/ipfs/QmfGkxafLpsq5iFZgo2xhruUpe2V6D4n4mbn96LvkyPFDj\"]},\"@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol\":{\"keccak256\":\"0xc68cad93ce702131a09334e8705d4af062278defa99627a2c94685fb96ff8cc4\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://6839a7f9fdb061559b6192c64fc919c83cad99bf0ff4663f249f8409d9f88abf\",\"dweb:/ipfs/QmS6DzcqHkD8TipTTZ94FthQjBhX81sfYtAQQC9Qzifxxm\"]},\"@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol\":{\"keccak256\":\"0x60aac6a853246704b017e55f9d3b456debfd0a7f49dd9a99e7113bed03ef0696\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://67add465d6dec3198061b5fb7ed4d8b0e1a26f0c0200115d338241ca74a693de\",\"dweb:/ipfs/Qmerko5uM4L1jwJKK7yPiqTq1QTgd6cbNEy6ffmTLBj6MW\"]},\"@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol\":{\"keccak256\":\"0x2f5ea7cdb9dfa192ca6aee45fda92edabc89ee373c33d783d18413ebecd8d79c\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://f5decb68ac6264f3a0ee1c4e1f59fdfe11f4d49f05c5c271dfd52664b4e397f9\",\"dweb:/ipfs/QmUKzH96sRkwHnT11zqUNgov1w4NnMCaumiTc4ixKgYA3R\"]},\"@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol\":{\"keccak256\":\"0x8d4a0f2b5b760b5e2c19ed3c108d83897a4dfd5bfed97a93867918df19191e5e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://7787f0e6d168740118ca2fc09a35e33644656f6998b124ab09a5fe790d5388f7\",\"dweb:/ipfs/QmeRPExxvGzci1QVdGpvoRWynS6xyczVXYNVqHLoMQaaMU\"]},\"@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol\":{\"keccak256\":\"0x5642ae1d6b33c5c0b71a8412c6c64cbcf2468b84a002bee3e33cdb5644d25cdb\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://07ba474854eacf022fca2ab63af2b09653f476a9ef2d144ea3d022a0c0b92726\",\"dweb:/ipfs/QmVNfrArMejFSrPMktAtDte64FJ2fGPQHqgSXDz2SH6dse\"]},\"@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol\":{\"keccak256\":\"0x8e9eb503de1189f50c5f16fef327da310b11898d6b9ab3ca937df07c35233b9e\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9631a7abcad07067f268b6295668a287e205ea9a8dc0fca02c2bf4db6c39431d\",\"dweb:/ipfs/QmUYFfB2AngTZLEsah4u8Z44riaB6yWkUXeasi1oG7ipfS\"]},\"@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol\":{\"keccak256\":\"0x1d84970ad956bd24b298d0876ff96e1e2125daead8a6791c5c7753e83123b724\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://70ce1561c46b66e51521813d10ba0c928ea185cc7ebd63a80a73e0f704f3fd77\",\"dweb:/ipfs/QmXgsPb22AV46v1k6w8AR3mYavteY7zWGUB26LKLvY4jqM\"]},\"@openzeppelin/contracts/token/ERC20/IERC20.sol\":{\"keccak256\":\"0xf8e8d118a7a8b2e134181f7da655f6266aa3a0f9134b2605747139fcb0c5d835\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://9ec48567e7ad06acb670980d5cdf3fd7f3949bf12894f02d68c3bb43e75aa84f\",\"dweb:/ipfs/QmaG3R2J9cz92YT77vFjYrjMNU2wHp4ypwYD62HqDUqS5U\"]}},\"version\":1}",
+  "bytecode": "0x6080604052348015600f57600080fd5b50603f80601d6000396000f3fe6080604052600080fdfea26469706673582212201a37f66efd7b10628b09acf2cecd1d2add70500633068d58ff633e9e7affd8d464736f6c63430008030033",
+  "deployedBytecode": "0x6080604052600080fdfea26469706673582212201a37f66efd7b10628b09acf2cecd1d2add70500633068d58ff633e9e7affd8d464736f6c63430008030033",
   "immutableReferences": {},
   "generatedSources": [],
   "deployedGeneratedSources": [],
@@ -15,49 +15,49 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol",
     "exportedSymbols": {
       "AddressUpgradeable": [
-        7824
+        7926
       ],
       "BancorBondingCurveV1Interface": [
-        6527
+        6629
       ],
       "ContextUpgradeable": [
-        7869
+        7971
       ],
       "ERC20Upgradeable": [
-        7502
+        7604
       ],
       "Escrow": [
         815
       ],
       "IERC20": [
-        9554
+        9656
       ],
       "IERC20Upgradeable": [
-        7580
+        7682
       ],
       "ITokenUtils": [
-        6624
+        6726
       ],
       "IVNFT": [
-        6750
+        6852
       ],
       "Initializable": [
-        6974
+        7076
       ],
       "OwnableUpgradeable": [
-        6927
+        7029
       ],
       "Power": [
-        2746
+        2742
       ],
       "ProductToken": [
-        3535
+        3531
       ],
       "ProductTokenDestroy": [
         1194
       ],
       "ProductTokenV1": [
-        5738
+        5824
       ],
       "ProductTokenV2": [
         1160
@@ -72,7 +72,7 @@
         1246
       ],
       "SafeMathUpgradeable": [
-        8181
+        8283
       ]
     },
     "id": 1247,
@@ -96,7 +96,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 7503,
+        "sourceUnit": 7605,
         "src": "25:78:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -108,7 +108,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 8182,
+        "sourceUnit": 8284,
         "src": "104:80:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -120,7 +120,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 3536,
+        "sourceUnit": 3532,
         "src": "186:29:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -132,7 +132,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 5739,
+        "sourceUnit": 5825,
         "src": "216:31:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -144,7 +144,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 2747,
+        "sourceUnit": 2743,
         "src": "248:22:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -157,7 +157,7 @@
               "id": 1107,
               "name": "ProductTokenV1",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 5738,
+              "referencedDeclaration": 5824,
               "src": "300:14:8"
             },
             "id": 1108,
@@ -167,27 +167,27 @@
         ],
         "contractDependencies": [
           815,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 1160,
         "linearizedBaseContracts": [
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV2",
         "nameLocation": "282:14:8",
@@ -337,7 +337,7 @@
           },
           {
             "baseFunctions": [
-              3057
+              3053
             ],
             "body": {
               "id": 1139,
@@ -355,7 +355,7 @@
                           "name": "getTotalSupply",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3024,
+                          "referencedDeclaration": 3020,
                           "src": "595:14:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$__$returns$_t_uint32_$",
@@ -382,7 +382,7 @@
                         "name": "reserveBalance",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2794,
+                        "referencedDeclaration": 2790,
                         "src": "613:14:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -404,7 +404,7 @@
                           "name": "reserveRatio",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2798,
+                          "referencedDeclaration": 2794,
                           "src": "629:12:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint32",
@@ -472,10 +472,10 @@
                         "name": "bondingCurve",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2809,
+                        "referencedDeclaration": 2805,
                         "src": "557:12:8",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_BancorBondingCurveV1Interface_$6527",
+                          "typeIdentifier": "t_contract$_BancorBondingCurveV1Interface_$6629",
                           "typeString": "contract BancorBondingCurveV1Interface"
                         }
                       },
@@ -486,7 +486,7 @@
                       "lValueRequested": false,
                       "memberName": "calculatePriceForNTokens",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6500,
+                      "referencedDeclaration": 6602,
                       "src": "557:37:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_uint32_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$",
@@ -605,7 +605,7 @@
           },
           {
             "baseFunctions": [
-              2999
+              2995
             ],
             "body": {
               "id": 1158,
@@ -648,7 +648,7 @@
                           "name": "maxTokenCount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2800,
+                          "referencedDeclaration": 2796,
                           "src": "770:13:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint32",
@@ -667,7 +667,7 @@
                                 "name": "totalSupply",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 7076,
+                                "referencedDeclaration": 7178,
                                 "src": "793:11:8",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_view$__$returns$_t_uint256_$",
@@ -744,7 +744,7 @@
                         "name": "tradeinCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2802,
+                        "referencedDeclaration": 2798,
                         "src": "810:12:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint32",
@@ -871,13 +871,13 @@
         "contractDependencies": [
           815,
           1160,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -885,14 +885,14 @@
         "linearizedBaseContracts": [
           1193,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV3",
         "nameLocation": "849:14:8",
@@ -904,7 +904,7 @@
               "id": 1163,
               "name": "SafeMathUpgradeable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 8181,
+              "referencedDeclaration": 8283,
               "src": "894:19:8"
             },
             "nodeType": "UsingForDirective",
@@ -982,7 +982,7 @@
                   "id": 1188,
                   "name": "initializer",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 6973,
+                  "referencedDeclaration": 7075,
                   "src": "1216:11:8"
                 },
                 "nodeType": "ModifierInvocation",
@@ -1296,13 +1296,13 @@
         "contractDependencies": [
           815,
           1160,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -1310,14 +1310,14 @@
         "linearizedBaseContracts": [
           1197,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV4",
         "nameLocation": "1283:14:8",
@@ -1346,13 +1346,13 @@
           815,
           1160,
           1193,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -1361,14 +1361,14 @@
           1246,
           1193,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV5",
         "nameLocation": "1331:14:8",
@@ -1451,7 +1451,7 @@
                       "name": "__ERC20_init",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7021,
+                      "referencedDeclaration": 7123,
                       "src": "2141:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$__$",
@@ -1540,7 +1540,7 @@
                   "id": 1224,
                   "name": "initializer",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 6973,
+                  "referencedDeclaration": 7075,
                   "src": "2121:11:8"
                 },
                 "nodeType": "ModifierInvocation",
@@ -1933,49 +1933,49 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/Mock/ProductTokenV2.sol",
     "exportedSymbols": {
       "AddressUpgradeable": [
-        7824
+        7926
       ],
       "BancorBondingCurveV1Interface": [
-        6527
+        6629
       ],
       "ContextUpgradeable": [
-        7869
+        7971
       ],
       "ERC20Upgradeable": [
-        7502
+        7604
       ],
       "Escrow": [
         815
       ],
       "IERC20": [
-        9554
+        9656
       ],
       "IERC20Upgradeable": [
-        7580
+        7682
       ],
       "ITokenUtils": [
-        6624
+        6726
       ],
       "IVNFT": [
-        6750
+        6852
       ],
       "Initializable": [
-        6974
+        7076
       ],
       "OwnableUpgradeable": [
-        6927
+        7029
       ],
       "Power": [
-        2746
+        2742
       ],
       "ProductToken": [
-        3535
+        3531
       ],
       "ProductTokenDestroy": [
         1194
       ],
       "ProductTokenV1": [
-        5738
+        5824
       ],
       "ProductTokenV2": [
         1160
@@ -1990,7 +1990,7 @@
         1246
       ],
       "SafeMathUpgradeable": [
-        8181
+        8283
       ]
     },
     "id": 1247,
@@ -2014,7 +2014,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 7503,
+        "sourceUnit": 7605,
         "src": "25:78:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2026,7 +2026,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 8182,
+        "sourceUnit": 8284,
         "src": "104:80:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2038,7 +2038,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 3536,
+        "sourceUnit": 3532,
         "src": "186:29:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2050,7 +2050,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 5739,
+        "sourceUnit": 5825,
         "src": "216:31:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2062,7 +2062,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 1247,
-        "sourceUnit": 2747,
+        "sourceUnit": 2743,
         "src": "248:22:8",
         "symbolAliases": [],
         "unitAlias": ""
@@ -2075,7 +2075,7 @@
               "id": 1107,
               "name": "ProductTokenV1",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 5738,
+              "referencedDeclaration": 5824,
               "src": "300:14:8"
             },
             "id": 1108,
@@ -2085,27 +2085,27 @@
         ],
         "contractDependencies": [
           815,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
         "id": 1160,
         "linearizedBaseContracts": [
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV2",
         "nameLocation": "282:14:8",
@@ -2255,7 +2255,7 @@
           },
           {
             "baseFunctions": [
-              3057
+              3053
             ],
             "body": {
               "id": 1139,
@@ -2273,7 +2273,7 @@
                           "name": "getTotalSupply",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 3024,
+                          "referencedDeclaration": 3020,
                           "src": "595:14:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_view$__$returns$_t_uint32_$",
@@ -2300,7 +2300,7 @@
                         "name": "reserveBalance",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2794,
+                        "referencedDeclaration": 2790,
                         "src": "613:14:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -2322,7 +2322,7 @@
                           "name": "reserveRatio",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2798,
+                          "referencedDeclaration": 2794,
                           "src": "629:12:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint32",
@@ -2390,10 +2390,10 @@
                         "name": "bondingCurve",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2809,
+                        "referencedDeclaration": 2805,
                         "src": "557:12:8",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_contract$_BancorBondingCurveV1Interface_$6527",
+                          "typeIdentifier": "t_contract$_BancorBondingCurveV1Interface_$6629",
                           "typeString": "contract BancorBondingCurveV1Interface"
                         }
                       },
@@ -2404,7 +2404,7 @@
                       "lValueRequested": false,
                       "memberName": "calculatePriceForNTokens",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 6500,
+                      "referencedDeclaration": 6602,
                       "src": "557:37:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_external_view$_t_uint32_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$",
@@ -2523,7 +2523,7 @@
           },
           {
             "baseFunctions": [
-              2999
+              2995
             ],
             "body": {
               "id": 1158,
@@ -2566,7 +2566,7 @@
                           "name": "maxTokenCount",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 2800,
+                          "referencedDeclaration": 2796,
                           "src": "770:13:8",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint32",
@@ -2585,7 +2585,7 @@
                                 "name": "totalSupply",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 7076,
+                                "referencedDeclaration": 7178,
                                 "src": "793:11:8",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_view$__$returns$_t_uint256_$",
@@ -2662,7 +2662,7 @@
                         "name": "tradeinCount",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 2802,
+                        "referencedDeclaration": 2798,
                         "src": "810:12:8",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint32",
@@ -2789,13 +2789,13 @@
         "contractDependencies": [
           815,
           1160,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -2803,14 +2803,14 @@
         "linearizedBaseContracts": [
           1193,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV3",
         "nameLocation": "849:14:8",
@@ -2822,7 +2822,7 @@
               "id": 1163,
               "name": "SafeMathUpgradeable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 8181,
+              "referencedDeclaration": 8283,
               "src": "894:19:8"
             },
             "nodeType": "UsingForDirective",
@@ -2900,7 +2900,7 @@
                   "id": 1188,
                   "name": "initializer",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 6973,
+                  "referencedDeclaration": 7075,
                   "src": "1216:11:8"
                 },
                 "nodeType": "ModifierInvocation",
@@ -3214,13 +3214,13 @@
         "contractDependencies": [
           815,
           1160,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -3228,14 +3228,14 @@
         "linearizedBaseContracts": [
           1197,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV4",
         "nameLocation": "1283:14:8",
@@ -3264,13 +3264,13 @@
           815,
           1160,
           1193,
-          3535,
-          5738,
-          6927,
-          6974,
-          7502,
-          7580,
-          7869
+          3531,
+          5824,
+          7029,
+          7076,
+          7604,
+          7682,
+          7971
         ],
         "contractKind": "contract",
         "fullyImplemented": true,
@@ -3279,14 +3279,14 @@
           1246,
           1193,
           1160,
-          5738,
-          3535,
-          6927,
+          5824,
+          3531,
+          7029,
           815,
-          7502,
-          7580,
-          7869,
-          6974
+          7604,
+          7682,
+          7971,
+          7076
         ],
         "name": "ProductTokenV5",
         "nameLocation": "1331:14:8",
@@ -3369,7 +3369,7 @@
                       "name": "__ERC20_init",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 7021,
+                      "referencedDeclaration": 7123,
                       "src": "2141:12:8",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_string_memory_ptr_$_t_string_memory_ptr_$returns$__$",
@@ -3458,7 +3458,7 @@
                   "id": 1224,
                   "name": "initializer",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 6973,
+                  "referencedDeclaration": 7075,
                   "src": "2121:11:8"
                 },
                 "nodeType": "ModifierInvocation",
@@ -3853,7 +3853,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.0",
-  "updatedAt": "2021-09-16T10:31:19.378Z",
+  "updatedAt": "2021-09-16T14:56:36.184Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},

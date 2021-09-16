@@ -5336,19 +5336,19 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/HSToken.sol",
     "exportedSymbols": {
       "Context": [
-        9898
+        10000
       ],
       "ERC20": [
-        9476
+        9578
       ],
       "HSToken": [
         843
       ],
       "IERC20": [
-        9554
+        9656
       ],
       "IERC20Metadata": [
-        9579
+        9681
       ]
     },
     "id": 844,
@@ -5372,7 +5372,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 844,
-        "sourceUnit": 9477,
+        "sourceUnit": 9579,
         "src": "24:55:3",
         "symbolAliases": [],
         "unitAlias": ""
@@ -5385,7 +5385,7 @@
               "id": 820,
               "name": "ERC20",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 9476,
+              "referencedDeclaration": 9578,
               "src": "449:5:3"
             },
             "id": 821,
@@ -5394,10 +5394,10 @@
           }
         ],
         "contractDependencies": [
-          9476,
-          9554,
-          9579,
-          9898
+          9578,
+          9656,
+          9681,
+          10000
         ],
         "contractKind": "contract",
         "documentation": {
@@ -5410,10 +5410,10 @@
         "id": 843,
         "linearizedBaseContracts": [
           843,
-          9476,
-          9579,
-          9554,
-          9898
+          9578,
+          9681,
+          9656,
+          10000
         ],
         "name": "HSToken",
         "nameLocation": "438:7:3",
@@ -5555,7 +5555,7 @@
                       "name": "_mint",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 9357,
+                      "referencedDeclaration": 9459,
                       "src": "579:5:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -5627,7 +5627,7 @@
                   "id": 825,
                   "name": "ERC20",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 9476,
+                  "referencedDeclaration": 9578,
                   "src": "497:5:3"
                 },
                 "nodeType": "ModifierInvocation",
@@ -5695,19 +5695,19 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/HSToken.sol",
     "exportedSymbols": {
       "Context": [
-        9898
+        10000
       ],
       "ERC20": [
-        9476
+        9578
       ],
       "HSToken": [
         843
       ],
       "IERC20": [
-        9554
+        9656
       ],
       "IERC20Metadata": [
-        9579
+        9681
       ]
     },
     "id": 844,
@@ -5731,7 +5731,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 844,
-        "sourceUnit": 9477,
+        "sourceUnit": 9579,
         "src": "24:55:3",
         "symbolAliases": [],
         "unitAlias": ""
@@ -5744,7 +5744,7 @@
               "id": 820,
               "name": "ERC20",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 9476,
+              "referencedDeclaration": 9578,
               "src": "449:5:3"
             },
             "id": 821,
@@ -5753,10 +5753,10 @@
           }
         ],
         "contractDependencies": [
-          9476,
-          9554,
-          9579,
-          9898
+          9578,
+          9656,
+          9681,
+          10000
         ],
         "contractKind": "contract",
         "documentation": {
@@ -5769,10 +5769,10 @@
         "id": 843,
         "linearizedBaseContracts": [
           843,
-          9476,
-          9579,
-          9554,
-          9898
+          9578,
+          9681,
+          9656,
+          10000
         ],
         "name": "HSToken",
         "nameLocation": "438:7:3",
@@ -5914,7 +5914,7 @@
                       "name": "_mint",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 9357,
+                      "referencedDeclaration": 9459,
                       "src": "579:5:3",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$_t_address_$_t_uint256_$returns$__$",
@@ -5986,7 +5986,7 @@
                   "id": 825,
                   "name": "ERC20",
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 9476,
+                  "referencedDeclaration": 9578,
                   "src": "497:5:3"
                 },
                 "nodeType": "ModifierInvocation",
@@ -6056,7 +6056,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.0",
-  "updatedAt": "2021-09-16T10:31:19.340Z",
+  "updatedAt": "2021-09-16T14:56:36.164Z",
   "devdoc": {
     "details": "This is an implementation of the ERC20 token that will be used as utility token on our platform.",
     "kind": "dev",

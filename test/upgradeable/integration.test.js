@@ -2,7 +2,7 @@ const { deployProxy } = require('@openzeppelin/truffle-upgrades');
 const { BN, expectRevert, expectEvent } = require('@openzeppelin/test-helpers');
 const { expect, assert } = require('chai');
 
-// const ERC1967Proxy = artifacts.require('ERC1967Proxy');
+const TokenFactoryProxy = artifacts.require('TokenFactoryProxy');
 const TokenFactory = artifacts.require('TokenFactory');
 // const ProductToken = artifacts.require('ProductToken');
 const ProductTokenV0 = artifacts.require('ProductTokenV0');
@@ -14,6 +14,7 @@ const TokenUtils = artifacts.require('TokenUtils');
 const VoucherMock = artifacts.require('VoucherMock');
 const DaiMock = artifacts.require('DaiMock');
 const ChainLinkMock = artifacts.require('ChainLinkMock');
+const TokenFactoryV1Mock = artifacts.require('TokenFactoryV1Mock');
 
 
 require('chai')
@@ -67,7 +68,7 @@ contract('integration flow check', function (accounts) {
         this.user2 = accounts[2];
         this.supplier = accounts[3];
 
-        this.factoryImpl = await TokenFactory.new({from: this.owner});
+        this.factoryImpl = await TokenFactory.new();
         this.implementationV0 = await ProductTokenV0.new();
         this.bondingCurveImpl = await BondingCurve.new();
         this.tokenUtils = await TokenUtils.new();
@@ -84,8 +85,10 @@ contract('integration flow check', function (accounts) {
     beforeEach(async function () {
         // initial tokenfactory
         this.beacon = await UpgradeableBeacon.new(this.implementationV0.address, {from: this.owner});
-        this.factoryImpl.initialize(this.beacon.address, {from: this.owner});
-        this.tokenFactory = this.factoryImpl;
+
+        const data = await this.factoryImpl.contract.methods.initialize(this.beacon.address).encodeABI();
+        this.factoryProxyImpl = await TokenFactoryProxy.new(this.factoryImpl.address, data, {from: this.owner});
+        this.tokenFactory = await TokenFactory.at(this.factoryProxyImpl.address);
 
         // create HighGO token
         const data1 = this.implementationV0.contract
@@ -103,7 +106,7 @@ contract('integration flow check', function (accounts) {
         await this.highGo.launch({from: this.owner});
     });
 
-    it('upgrade from V0 To V1', async function (){
+    it('product token upgrade from V0 To V1', async function () {
         let { highGo,
             voucherMock,
             user1,
@@ -227,5 +230,39 @@ contract('integration flow check', function (accounts) {
         await highGo.tradein(1, false, {from: user1});
         console.log((await highGo.balanceOf(user1)).toString());
         printEscrowList(await highGo.getEscrowHistory(user1));
+    });
+
+    it('token factory upgrade', async function () {
+        let {factoryProxyImpl, tokenFactory, implementationV0, bondingCurveImpl} = this;
+
+        // CREATE PRODUCT
+        let data = implementationV0.contract
+                .methods.initialize('HighWatch', 'HW', bondingCurveImpl.address, exp, max, offset, baseReserve).encodeABI();
+        await tokenFactory.createToken(
+        "HighWatch", data, {from: this.owner}
+        );
+        let highWatchAddress = await tokenFactory.retrieveToken("HighWatch");
+        console.log("highWatchAddress", highWatchAddress);
+
+        // CREATE PRODUCT
+        data = implementationV0.contract
+                .methods.initialize('HighDuck', 'HD', bondingCurveImpl.address, exp, max, offset, baseReserve).encodeABI();
+        await tokenFactory.createToken(
+        "HighDuck", data, {from: this.owner}
+        );
+        let highDuckAddress = await tokenFactory.retrieveToken("HighDuck");
+        console.log("highDuckAddress", highDuckAddress);
+
+        // UPGRADE TO V1
+        factoryV1 = await TokenFactoryV1Mock.new();
+        tokenFactory.upgradeTo(factoryV1.address);
+
+        tokenFactory = await TokenFactoryV1Mock.at(factoryProxyImpl.address);
+        assert.equal(await tokenFactory.getVersion(), "v1 Mock");
+
+        assert.equal(highWatchAddress, await tokenFactory.retrieveToken("HighWatch"));
+        assert.equal(highDuckAddress, await tokenFactory.retrieveToken("HighDuck"));
+
+
     });
 })

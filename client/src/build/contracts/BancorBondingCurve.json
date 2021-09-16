@@ -4154,19 +4154,19 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/BancorBondingCurve.sol",
     "exportedSymbols": {
       "AddressUpgradeable": [
-        7824
+        7926
       ],
       "BancorBondingCurve": [
         527
       ],
       "Initializable": [
-        6974
+        7076
       ],
       "Power": [
-        2746
+        2742
       ],
       "SafeMathUpgradeable": [
-        8181
+        8283
       ]
     },
     "id": 528,
@@ -4190,7 +4190,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 528,
-        "sourceUnit": 8182,
+        "sourceUnit": 8284,
         "src": "25:80:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -4202,7 +4202,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 528,
-        "sourceUnit": 2747,
+        "sourceUnit": 2743,
         "src": "106:21:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -4215,7 +4215,7 @@
               "id": 182,
               "name": "Power",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 2746,
+              "referencedDeclaration": 2742,
               "src": "623:5:1"
             },
             "id": 183,
@@ -4224,8 +4224,8 @@
           }
         ],
         "contractDependencies": [
-          2746,
-          6974
+          2742,
+          7076
         ],
         "contractKind": "contract",
         "documentation": {
@@ -4238,8 +4238,8 @@
         "id": 527,
         "linearizedBaseContracts": [
           527,
-          2746,
-          6974
+          2742,
+          7076
         ],
         "name": "BancorBondingCurve",
         "nameLocation": "601:18:1",
@@ -4251,7 +4251,7 @@
               "id": 184,
               "name": "SafeMathUpgradeable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 8181,
+              "referencedDeclaration": 8283,
               "src": "639:19:1"
             },
             "nodeType": "UsingForDirective",
@@ -4325,7 +4325,7 @@
                       "name": "__Power_init",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1954,
+                      "referencedDeclaration": 1950,
                       "src": "757:12:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
@@ -5043,7 +5043,7 @@
                                 "lValueRequested": false,
                                 "memberName": "mul",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8075,
+                                "referencedDeclaration": 8177,
                                 "src": "1963:10:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -5072,7 +5072,7 @@
                             "lValueRequested": false,
                             "memberName": "div",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 8090,
+                            "referencedDeclaration": 8192,
                             "src": "1963:31:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -5251,7 +5251,7 @@
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8045,
+                      "referencedDeclaration": 8147,
                       "src": "2072:10:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -5399,7 +5399,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "2118:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -5516,7 +5516,7 @@
                         "lValueRequested": false,
                         "memberName": "mul",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 8075,
+                        "referencedDeclaration": 8177,
                         "src": "2206:19:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -6354,7 +6354,7 @@
                                     "lValueRequested": false,
                                     "memberName": "mul",
                                     "nodeType": "MemberAccess",
-                                    "referencedDeclaration": 8075,
+                                    "referencedDeclaration": 8177,
                                     "src": "3559:10:1",
                                     "typeDescriptions": {
                                       "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -6383,7 +6383,7 @@
                                 "lValueRequested": false,
                                 "memberName": "div",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8090,
+                                "referencedDeclaration": 8192,
                                 "src": "3559:30:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -6604,7 +6604,7 @@
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8045,
+                      "referencedDeclaration": 8147,
                       "src": "3677:18:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -6752,7 +6752,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "3740:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -6869,7 +6869,7 @@
                         "lValueRequested": false,
                         "memberName": "mul",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 8075,
+                        "referencedDeclaration": 8177,
                         "src": "3836:10:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -7974,7 +7974,7 @@
                                 "lValueRequested": false,
                                 "memberName": "mul",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8075,
+                                "referencedDeclaration": 8177,
                                 "src": "5300:19:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8003,7 +8003,7 @@
                             "lValueRequested": false,
                             "memberName": "div",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 8090,
+                            "referencedDeclaration": 8192,
                             "src": "5300:35:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8182,7 +8182,7 @@
                       "lValueRequested": false,
                       "memberName": "sub",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8060,
+                      "referencedDeclaration": 8162,
                       "src": "5412:10:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8330,7 +8330,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "5462:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -8437,7 +8437,7 @@
                       "lValueRequested": false,
                       "memberName": "mul",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8075,
+                      "referencedDeclaration": 8177,
                       "src": "5555:19:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8605,7 +8605,7 @@
                           "lValueRequested": false,
                           "memberName": "sub",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 8060,
+                          "referencedDeclaration": 8162,
                           "src": "5650:14:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8634,7 +8634,7 @@
                       "lValueRequested": false,
                       "memberName": "div",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8090,
+                      "referencedDeclaration": 8192,
                       "src": "5650:30:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -8843,19 +8843,19 @@
     "absolutePath": "/Users/jack/Documents/GitHub/HighStreet/client/src/contracts/BancorBondingCurve.sol",
     "exportedSymbols": {
       "AddressUpgradeable": [
-        7824
+        7926
       ],
       "BancorBondingCurve": [
         527
       ],
       "Initializable": [
-        6974
+        7076
       ],
       "Power": [
-        2746
+        2742
       ],
       "SafeMathUpgradeable": [
-        8181
+        8283
       ]
     },
     "id": 528,
@@ -8879,7 +8879,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 528,
-        "sourceUnit": 8182,
+        "sourceUnit": 8284,
         "src": "25:80:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -8891,7 +8891,7 @@
         "nameLocation": "-1:-1:-1",
         "nodeType": "ImportDirective",
         "scope": 528,
-        "sourceUnit": 2747,
+        "sourceUnit": 2743,
         "src": "106:21:1",
         "symbolAliases": [],
         "unitAlias": ""
@@ -8904,7 +8904,7 @@
               "id": 182,
               "name": "Power",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 2746,
+              "referencedDeclaration": 2742,
               "src": "623:5:1"
             },
             "id": 183,
@@ -8913,8 +8913,8 @@
           }
         ],
         "contractDependencies": [
-          2746,
-          6974
+          2742,
+          7076
         ],
         "contractKind": "contract",
         "documentation": {
@@ -8927,8 +8927,8 @@
         "id": 527,
         "linearizedBaseContracts": [
           527,
-          2746,
-          6974
+          2742,
+          7076
         ],
         "name": "BancorBondingCurve",
         "nameLocation": "601:18:1",
@@ -8940,7 +8940,7 @@
               "id": 184,
               "name": "SafeMathUpgradeable",
               "nodeType": "IdentifierPath",
-              "referencedDeclaration": 8181,
+              "referencedDeclaration": 8283,
               "src": "639:19:1"
             },
             "nodeType": "UsingForDirective",
@@ -9014,7 +9014,7 @@
                       "name": "__Power_init",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1954,
+                      "referencedDeclaration": 1950,
                       "src": "757:12:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_nonpayable$__$returns$__$",
@@ -9732,7 +9732,7 @@
                                 "lValueRequested": false,
                                 "memberName": "mul",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8075,
+                                "referencedDeclaration": 8177,
                                 "src": "1963:10:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -9761,7 +9761,7 @@
                             "lValueRequested": false,
                             "memberName": "div",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 8090,
+                            "referencedDeclaration": 8192,
                             "src": "1963:31:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -9940,7 +9940,7 @@
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8045,
+                      "referencedDeclaration": 8147,
                       "src": "2072:10:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -10088,7 +10088,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "2118:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -10205,7 +10205,7 @@
                         "lValueRequested": false,
                         "memberName": "mul",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 8075,
+                        "referencedDeclaration": 8177,
                         "src": "2206:19:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -11043,7 +11043,7 @@
                                     "lValueRequested": false,
                                     "memberName": "mul",
                                     "nodeType": "MemberAccess",
-                                    "referencedDeclaration": 8075,
+                                    "referencedDeclaration": 8177,
                                     "src": "3559:10:1",
                                     "typeDescriptions": {
                                       "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -11072,7 +11072,7 @@
                                 "lValueRequested": false,
                                 "memberName": "div",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8090,
+                                "referencedDeclaration": 8192,
                                 "src": "3559:30:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -11293,7 +11293,7 @@
                       "lValueRequested": false,
                       "memberName": "add",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8045,
+                      "referencedDeclaration": 8147,
                       "src": "3677:18:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -11441,7 +11441,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "3740:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -11558,7 +11558,7 @@
                         "lValueRequested": false,
                         "memberName": "mul",
                         "nodeType": "MemberAccess",
-                        "referencedDeclaration": 8075,
+                        "referencedDeclaration": 8177,
                         "src": "3836:10:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -12663,7 +12663,7 @@
                                 "lValueRequested": false,
                                 "memberName": "mul",
                                 "nodeType": "MemberAccess",
-                                "referencedDeclaration": 8075,
+                                "referencedDeclaration": 8177,
                                 "src": "5300:19:1",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -12692,7 +12692,7 @@
                             "lValueRequested": false,
                             "memberName": "div",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 8090,
+                            "referencedDeclaration": 8192,
                             "src": "5300:35:1",
                             "typeDescriptions": {
                               "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -12871,7 +12871,7 @@
                       "lValueRequested": false,
                       "memberName": "sub",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8060,
+                      "referencedDeclaration": 8162,
                       "src": "5412:10:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -13019,7 +13019,7 @@
                         "name": "power",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 1999,
+                        "referencedDeclaration": 1995,
                         "src": "5462:5:1",
                         "typeDescriptions": {
                           "typeIdentifier": "t_function_internal_view$_t_uint256_$_t_uint256_$_t_uint32_$_t_uint32_$returns$_t_uint256_$_t_uint8_$",
@@ -13126,7 +13126,7 @@
                       "lValueRequested": false,
                       "memberName": "mul",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8075,
+                      "referencedDeclaration": 8177,
                       "src": "5555:19:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -13294,7 +13294,7 @@
                           "lValueRequested": false,
                           "memberName": "sub",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 8060,
+                          "referencedDeclaration": 8162,
                           "src": "5650:14:1",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -13323,7 +13323,7 @@
                       "lValueRequested": false,
                       "memberName": "div",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 8090,
+                      "referencedDeclaration": 8192,
                       "src": "5650:30:1",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_internal_pure$_t_uint256_$_t_uint256_$returns$_t_uint256_$bound_to$_t_uint256_$",
@@ -13534,7 +13534,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.0",
-  "updatedAt": "2021-09-16T10:31:19.308Z",
+  "updatedAt": "2021-09-16T14:56:36.151Z",
   "devdoc": {
     "details": "This is an implementation of the Bancor formula with slight modifications.",
     "kind": "dev",

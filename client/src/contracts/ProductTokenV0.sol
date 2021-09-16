@@ -209,6 +209,14 @@ contract ProductTokenV0 is ProductToken {
         require(success, "refund token failed");
     }
 
+    function getUserReward(address addr_) external virtual returns (uint256) {
+        if(userInfo[addr_].amount > 0) {
+            UserInfo storage user = userInfo[msg.sender];
+            PoolInfo storage pool = poolInfo;
+            return user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+        }
+        return 0;
+    }
 
     function getUserInfo(address addr_) external view virtual returns( UserInfo memory) {
         require(addr_ != address(0), 'invalid address');
