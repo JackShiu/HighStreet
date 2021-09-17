@@ -23,6 +23,7 @@ contract ProductTokenV1 is ProductToken {
     struct UserInfo {
         uint256 amount;
         uint256 rewardDebt;
+        uint256 lastReward;
         uint256[] records;
     }
     struct PoolInfo {
@@ -91,17 +92,20 @@ contract ProductTokenV1 is ProductToken {
             }
             _updateSupplierFee(fee.mul(1e12).div(8e12));
             fee = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
-            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
+            uint256 reward = fee.mul(6e12).div(8e12);
+            poolInfo.tokenReward = poolInfo.tokenReward.add(reward);
+            updatePool(reward);
             if(ids_ == INDEX_HIGH) {
                 price = _tokenUtils.toOrigValue(price, INDEX_HIGH);
                 UserInfo storage user = userInfo[msg.sender];
                 PoolInfo storage pool = poolInfo;
                 uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
                 if(pending > 0) {
+                    user.lastReward= pending;
                     instance.transfer(msg.sender, pending);
+                    poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
                 }
                 poolInfo.amount = poolInfo.amount.add(price);
-                updatePool();
                 _updateUserInfo(price);
             }
         }else { // If token transaction failed
@@ -150,13 +154,13 @@ contract ProductTokenV1 is ProductToken {
         emit Tradein(msg.sender, amount_);
     }
 
-    function updatePool() public virtual{
+    function updatePool(uint fee_) public virtual{
         uint256 supply = poolInfo.amount;
         if (supply == 0) {
             poolInfo.accRewardPerShare = 0;
             return;
         }
-        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(poolInfo.tokenReward.mul(1e12).div(supply));
+        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(fee_.mul(1e12).div(supply));
     }
 
     function _updateSellStaking(uint32 amount_, bool isHarvest_) internal virtual {
@@ -178,8 +182,9 @@ contract ProductTokenV1 is ProductToken {
 
                 poolInfo.amount = poolInfo.amount.sub(value);
                 if(pending > 0) {
+                    user.lastReward= pending;
                     IERC20(highAddress).transfer(msg.sender, pending);
-
+                    poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
                 }
                 user.amount = user.amount.sub(value);
                 user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
@@ -266,9 +271,9 @@ contract ProductTokenV1 is ProductToken {
         instance.transfer(to_, amount_);
     }
 
-    function getUserReward(address addr_) external virtual returns (uint256) {
+    function getUserReward(address addr_) external view virtual returns (uint256) {
         if(userInfo[addr_].amount > 0) {
-            UserInfo storage user = userInfo[msg.sender];
+            UserInfo storage user = userInfo[addr_];
             PoolInfo storage pool = poolInfo;
             return user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
         }

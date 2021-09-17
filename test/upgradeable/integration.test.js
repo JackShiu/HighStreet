@@ -44,6 +44,7 @@ contract('integration flow check', function (accounts) {
 
     const showUserInfo = async (tag, info) => {
         console.log(tag, "User:amount       :",bigNumberToNumber(info.amount));
+        console.log(tag, "User:lastReward       :",bigNumberToNumber(info.lastReward));
         console.log(tag, "User:rewardDebt   :",bigNumberToNumber(info.rewardDebt));
         info.records.forEach((v,i)=> console.log("User:records:",i ,bigNumberToNumber(v)))
     }
@@ -125,38 +126,60 @@ contract('integration flow check', function (accounts) {
         await voucherMock.faucet(highGo.address, numberToBigNumber(10000));
 
         // BUY BY VOUCHER
+        let balance = await voucherMock.balanceOf(user1);
         let price = await highGo.getCurrentPrice();
         await voucherMock.approve(highGo.address, price, {from: user1});
         await highGo.buyByVoucher(0, price, {from:user1});
         console.log('user buy');
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
+        console.log('getUserReward:', bigNumberToNumber(await highGo.getUserReward(user1)));
+        showUserInfo('user1', await highGo.getUserInfo(user1));
+        showPoolInfo(await highGo.getPoolInfo());
+        balance = (new BN(await voucherMock.balanceOf(user1))).sub(new BN(balance)).add(new BN(price))
+        console.log('balance', bigNumberToNumber(balance));
+        console.log("======================");
 
         // BUY BY VOUCHER
+        balance = await voucherMock.balanceOf(user1);
         price = await highGo.getCurrentPrice();
         await voucherMock.approve(highGo.address, price, {from: user1});
         await highGo.buyByVoucher(0, price, {from:user1});
         console.log('user buy');
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
+        console.log('getUserReward:', bigNumberToNumber(await highGo.getUserReward(user1)));
+        showUserInfo('user1', await highGo.getUserInfo(user1));
+        showPoolInfo(await highGo.getPoolInfo());
+        balance = (new BN(await voucherMock.balanceOf(user1))).sub(new BN(balance)).add(new BN(price))
+        console.log('balance', bigNumberToNumber(balance));
+        console.log("======================");
 
         // BUY BY VOUCHER
+        balance = await voucherMock.balanceOf(user1);
         price = await highGo.getCurrentPrice();
         await voucherMock.approve(highGo.address, price, {from: user1});
         await highGo.buyByVoucher(0, price, {from:user1});
         console.log('user buy');
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
+        console.log('getUserReward:', bigNumberToNumber(await highGo.getUserReward(user1)));
+        showUserInfo('user1', await highGo.getUserInfo(user1));
+        showPoolInfo(await highGo.getPoolInfo());
+        balance = (new BN(await voucherMock.balanceOf(user1))).sub(new BN(balance)).add(new BN(price))
+        console.log('balance', bigNumberToNumber(balance));
+        console.log("======================");
 
         // BUY BY VOUCHER
+        balance = await voucherMock.balanceOf(user1);
         price = await highGo.getCurrentPrice();
         await voucherMock.approve(highGo.address, price, {from: user2});
         await highGo.buyByVoucher(0, price, {from:user2});
         console.log('user buy');
         console.log('balance:', (await highGo.balanceOf(user2)).toString());
-
+        console.log("======================");
         //SELL BY VOUCHER
         await highGo.sellByVoucher(0, 1, {from: user1});
         console.log('user sell');
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
-
+        console.log("======================");
         // REDDEM BY VOUCHER
         await highGo.tradeinVoucher(0, 1, {from: user1});
         console.log('user redeem');

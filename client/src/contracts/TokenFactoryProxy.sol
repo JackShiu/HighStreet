@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 /// @title TokenFactoryProxy
 contract TokenFactoryProxy is ERC1967Proxy {
 
-    constructor (address _delegate, bytes memory _data  )  ERC1967Proxy(_delegate, _data)  {
+    constructor (address _delegate, bytes memory _data) ERC1967Proxy(_delegate, _data)  {
     }
 
     function getImplementation()  public returns (address) {
