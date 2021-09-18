@@ -131,7 +131,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
    *
    * @return supply                   supply value for bonding curve calculation.
   */
-  function getTotalSupply()
+  function _getTotalSupply()
     internal view virtual returns (uint32 supply)
   {
     return uint32(totalSupply().add(uint256(tradeinCount)).add(uint256(supplyOffset)));
@@ -165,7 +165,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
 
   function _getPriceForN(uint32 _amountProduct)
   	public view virtual returns	(uint256 price, uint256 fee) {
-      uint256 price = bondingCurve.calculatePriceForNTokens(getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
+      uint256 price = bondingCurve.calculatePriceForNTokens(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
       //8% is the platform transaction fee
       uint256 fee = price.mul(8e10).div(1e12);
       return (price, fee);
@@ -182,7 +182,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
   {
     uint value = _amountReserve.mul(1e12).div(1.08e12);
     uint fee = value.mul(6e10).div(1e12);
-    uint32 amount = bondingCurve.calculatePurchaseReturn(getTotalSupply(), reserveBalance, reserveRatio, value.sub(fee));
+    uint32 amount = bondingCurve.calculatePurchaseReturn(_getTotalSupply(), reserveBalance, reserveRatio, value.sub(fee));
     return (amount, fee);
   }
 
@@ -209,7 +209,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     internal view virtual returns (uint256 soldAmount, uint256 fee)
   {
     // ppm of 98%. 2% is the platform transaction fee
-    uint reimburseAmount = bondingCurve.calculateSaleReturn(getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
+    uint reimburseAmount = bondingCurve.calculateSaleReturn(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
     uint fee = reimburseAmount.mul(2e10).div(1e12);
     return (reimburseAmount, fee);
   }
@@ -297,7 +297,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
    * @param buyer                 the wallet address of product buyer
    * @param id                    the id of the escrow, returned to the user after starting of redemption process
   */
-  function updateUserCompleted(address buyer, uint256 id) external virtual{
+  function updateUserCompleted(address buyer, uint256 id) external virtual {
     require(msg.sender == owner() || msg.sender == _manager, 'permission denied');
     require(buyer != address(0), "Invalid buyer");
     _updateUserCompleted(buyer, id);
@@ -335,7 +335,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     _manager = addr_;
   }
 
-  function getManager() external view  virtual returns(address) {
+  function getManager() external view virtual returns(address) {
     return _manager;
   }
 

@@ -20,7 +20,7 @@ contract ProductTokenV2 is ProductTokenV1 {
   function getPriceForN(uint32 _amountProduct) 
   	public view override returns(uint256 price)
   {
-  	return bondingCurve.calculatePriceForNTokens(getTotalSupply(), reserveBalance, reserveRatio+50000, _amountProduct);
+  	return bondingCurve.calculatePriceForNTokens(_getTotalSupply(), reserveBalance, reserveRatio+50000, _amountProduct);
   }
 
     function getAvailability()
