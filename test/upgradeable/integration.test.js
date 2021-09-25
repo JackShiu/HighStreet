@@ -9,7 +9,6 @@ const ProductTokenV0 = artifacts.require('ProductTokenV0');
 const ProductTokenV1 = artifacts.require('ProductTokenV1');
 const BondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('ProductUpgradeableBeacon');
-const TokenUtils = artifacts.require('TokenUtils');
 /* MOCK */
 const VoucherMock = artifacts.require('VoucherMock');
 const DaiMock = artifacts.require('DaiMock');
@@ -44,7 +43,7 @@ contract('integration flow check', function (accounts) {
 
     const showUserInfo = async (tag, info) => {
         console.log(tag, "User:amount       :",bigNumberToNumber(info.amount));
-        console.log(tag, "User:lastReward       :",bigNumberToNumber(info.lastReward));
+        // console.log(tag, "User:lastReward       :",bigNumberToNumber(info.lastReward));
         console.log(tag, "User:rewardDebt   :",bigNumberToNumber(info.rewardDebt));
         info.records.forEach((v,i)=> console.log("User:records:",i ,bigNumberToNumber(v)))
     }
@@ -72,15 +71,11 @@ contract('integration flow check', function (accounts) {
         this.factoryImpl = await TokenFactory.new();
         this.implementationV0 = await ProductTokenV0.new();
         this.bondingCurveImpl = await BondingCurve.new();
-        this.tokenUtils = await TokenUtils.new();
 
         /*erc20 mock*/
         this.voucherMock = await VoucherMock.new();
         this.HighMock = await DaiMock.new();
 
-        /*chainlink mock*/
-        this.DaiEtherMock = await ChainLinkMock.new(DaiEtherRatio, {from: this.owner});
-        this.HsTokenEtherMock = await ChainLinkMock.new(HsTokenEtherRatio, {from: this.owner});
     });
 
     beforeEach(async function () {
@@ -101,7 +96,6 @@ contract('integration flow check', function (accounts) {
         // get HighGO token address
         this.highGoAddress = await this.tokenFactory.retrieveToken.call("HighGO");
         this.highGo = new ProductTokenV0(this.highGoAddress);
-        await this.highGo.setupTokenUtils(this.tokenUtils.address);
         await this.highGo.setupVoucher(this.voucherMock.address, 10, true);
         await this.highGo.setSupplier(this.supplier, {from: this.owner});
         await this.highGo.launch({from: this.owner});
@@ -113,11 +107,8 @@ contract('integration flow check', function (accounts) {
             user1,
             user2,
             owner,
-            tokenUtils,
             beacon,
             HighMock,
-            DaiEtherMock,
-            HsTokenEtherMock,
             highGoAddress } =this;
 
         await voucherMock.faucet(user1, numberToBigNumber(10000));
@@ -204,15 +195,12 @@ contract('integration flow check', function (accounts) {
         beacon.upgradeTo(implementationV1.address, {from: owner});
 
         highGo = new ProductTokenV1(highGoAddress);
-
+        await highGo.setHigh(this.HighMock.address, {from: this.owner});
         // CHECK INFO
         console.log('should info after upgrade');
         showPoolInfo(await highGo.getPoolInfo())
         showUserInfo('user1', await highGo.getUserInfo(user1));
         showUserInfo('user2', await highGo.getUserInfo(user2));
-
-        // UPDATE CHAINLINK INFO
-        await tokenUtils.updateCurrency(INDEX_HIGH, 'HIGH', HighMock.address, DaiEtherMock.address, HsTokenEtherMock.address, true );
 
         //SHOULD TRANSFER HIGH TO CONTRACT
         await HighMock.faucet(user1, numberToBigNumber(10000));
@@ -226,12 +214,12 @@ contract('integration flow check', function (accounts) {
 
         // SELL
         console.log('user sell');
-        await highGo.sell(1, false, {from: user1});
+        await highGo.sell(1, {from: user1});
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
 
         // SELL
         console.log('user sell');
-        await highGo.sell(1, false, {from: user2});
+        await highGo.sell(1, {from: user2});
         console.log('balance:', (await highGo.balanceOf(user2)).toString());
 
         // CHECK INFO
@@ -242,15 +230,15 @@ contract('integration flow check', function (accounts) {
 
         // BUY BY HIGH
         console.log('user buy by high');
-        price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+        price = await highGo.getCurrentPrice();
         console.log('price', bigNumberToNumber(price));
         await HighMock.approve(highGo.address, price, {from: user1});
-        await highGo.buyERC20(1, price, {from: user1});
+        await highGo.buy(price, {from: user1});
         console.log('balance:', (await highGo.balanceOf(user1)).toString());
 
         // TRDEIN
         console.log('user tradein');
-        await highGo.tradein(1, false, {from: user1});
+        await highGo.tradein(1, {from: user1});
         console.log((await highGo.balanceOf(user1)).toString());
         printEscrowList(await highGo.getEscrowHistory(user1));
     });
@@ -285,7 +273,6 @@ contract('integration flow check', function (accounts) {
 
         assert.equal(highWatchAddress, await tokenFactory.retrieveToken("HighWatch"));
         assert.equal(highDuckAddress, await tokenFactory.retrieveToken("HighDuck"));
-
 
     });
 })

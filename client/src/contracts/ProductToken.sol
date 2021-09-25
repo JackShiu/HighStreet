@@ -80,6 +80,10 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     maxTokenCount = _maxTokenCount;
   }
 
+  function decimals() public view virtual override returns (uint8) {
+      return 0;
+  }
+
   /**
    * @dev requires function to be called from owner. sets a bonding curve implementation for this product.
    *

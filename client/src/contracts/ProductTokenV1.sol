@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "./ProductToken.sol";
 import "./interface/IVNFT.sol";
-import "./interface/ITokenUtils.sol";
 
 /// @title ProductTokenV1
 /// @notice This is version 1 of the product token implementation.
@@ -14,9 +13,6 @@ import "./interface/ITokenUtils.sol";
 ///    and exchange rate computation by including a price oracle.
 contract ProductTokenV1 is ProductToken {
 	using SafeMathUpgradeable for uint256;
-
-    event Update(address daiAddress, address chainlinkAddress);
-    event UpdateHsToken(address daiAddress, address chainlinkAddress);
 
     struct supplierInfo {
         uint256 amount;
@@ -40,93 +36,55 @@ contract ProductTokenV1 is ProductToken {
         bool isEnable;
     }
 
-    uint256 constant public  INDEX_ETH  = 0;
-    uint256 constant public  INDEX_HIGH = 1;
-    uint256 constant public  INDEX_DAI  = 2;
-
     supplierInfo public supplier;
     PoolInfo public poolInfo;
     voucherInfo public voucher;
     mapping (address => UserInfo) public userInfo;
-    ITokenUtils private _tokenUtils;
+    IERC20 high;
 
-    function setupTokenUtils(address addr_) external virtual onlyOwner {
-        require(addr_ != address(0));
-        _tokenUtils = ITokenUtils(addr_);
+    function setHigh(address highAddress_) external onlyOwner {
+        require(highAddress_!=address(0), "Invalid address");
+        high = IERC20(highAddress_);
     }
 
-    function buyETH() external virtual payable onlyIfTradable {
-        require(_tokenUtils.isSupportIds(INDEX_ETH), 'not support');
-        require(msg.value > 0, "invalid value");
-
-        uint256 accValue = _tokenUtils.toAccValue(msg.value, INDEX_ETH);
-
-        (uint256 amount,uint256 change,,uint256 fee) = _buy(accValue);
-
-        if (amount > 0) {
-            if(change > 0) {
-                change = _tokenUtils.toOrigValue(change, INDEX_ETH);
-                payable(msg.sender).transfer(change);
-            }
-            _updateSupplierFee(fee.mul(1e12).div(8e12));
-            fee = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
-            poolInfo.tokenReward = poolInfo.tokenReward.add(fee.mul(6e12).div(8e12));
-        }else {
-            payable(msg.sender).transfer(msg.value);
-        }
-    }
-
-    function buyERC20(uint256 ids_, uint256 maxPrice_) external virtual onlyIfTradable {
-        require(_tokenUtils.isSupportIds(ids_), 'not support');
+    function buy(uint256 maxPrice_) external virtual onlyIfTradable {
         require(maxPrice_ > 0, "invalid max price");
 
-        IERC20 instance =  IERC20(_tokenUtils.getAddressByIds(ids_));
-        bool success = instance.transferFrom(msg.sender, address(this), maxPrice_);
+        bool success = high.transferFrom(msg.sender, address(this), maxPrice_);
         require(success, "Purchase failed.");
 
-        uint256 accValue = _tokenUtils.toAccValue(maxPrice_, ids_);
-
-        (uint256 amount,uint256 change, uint price, uint256 fee)  = _buy(accValue);
+        (uint256 amount,uint256 change, uint price, uint256 fee)  = _buy(maxPrice_);
         if (amount > 0) {
             if(change > 0) {
-                change = _tokenUtils.toOrigValue(change, ids_);
-                instance.transfer(msg.sender, change);
+                high.transfer(msg.sender, change);
             }
             _updateSupplierFee(fee.mul(1e12).div(8e12));
-            fee = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
             uint256 reward = fee.mul(6e12).div(8e12);
             poolInfo.tokenReward = poolInfo.tokenReward.add(reward);
             updatePool(reward);
-            if(ids_ == INDEX_HIGH) {
-                price = _tokenUtils.toOrigValue(price, INDEX_HIGH);
-                UserInfo storage user = userInfo[msg.sender];
-                PoolInfo storage pool = poolInfo;
-                uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-                if(pending > 0) {
-                    user.lastReward= pending;
-                    instance.transfer(msg.sender, pending);
-                    poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
-                }
-                poolInfo.amount = poolInfo.amount.add(price);
-                _updateUserInfo(price);
+            UserInfo storage user = userInfo[msg.sender];
+            PoolInfo storage pool = poolInfo;
+            uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+            if(pending > 0) {
+                user.lastReward= pending;
+                high.transfer(msg.sender, pending);
+                poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
             }
+            poolInfo.amount = poolInfo.amount.add(price);
+            _updateUserInfo(price);
         }else { // If token transaction failed
-            instance.transfer(msg.sender, maxPrice_);
+            high.transfer(msg.sender, maxPrice_);
         }
     }
 
-    function sell(uint32 amount_, bool isHarvest_) external virtual onlyIfTradable {
-        require(_tokenUtils.isSupportIds(INDEX_HIGH), 'not support');
+    function sell(uint32 amount_) external virtual onlyIfTradable {
         require(balanceOf(msg.sender) >= amount_ || amount_ > 0, 'invalid amount');
-
-        address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
 
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
-        _updateSellStaking(amount_, isHarvest_);
+        _updateSellStaking(amount_);
 
-        uint256 accValue = _tokenUtils.toOrigValue(price, INDEX_HIGH);
-        bool success = IERC20(highAddress).transfer(msg.sender, accValue);
+        bool success = high.transfer(msg.sender, price);
         _updateSupplierFee(fee.mul(1e12).div(2e12));
         require(success, "selling token failed");
     }
@@ -136,8 +94,7 @@ contract ProductTokenV1 is ProductToken {
     *
     * @param amount_                   amount of tokens that user wants to trade in.
     */
-    function tradein(uint32 amount_, bool isHarvest_) external virtual onlyIfTradable {
-        require(_tokenUtils.isSupportIds(INDEX_HIGH), 'not support');
+    function tradein(uint32 amount_) external virtual onlyIfTradable {
         require(amount_ > 0, "Amount must be non-zero.");
         require(balanceOf(msg.sender) >= amount_, "Insufficient tokens to burn.");
 
@@ -146,12 +103,12 @@ contract ProductTokenV1 is ProductToken {
         uint256 tradinReturn = calculateTradinReturn(amount_);
         _updateSupplierFee(fee.mul(1e13).div(2e13).add(tradinReturn));
         reimburseAmount = reimburseAmount.sub(fee);
-        _addEscrow(amount_,  _tokenUtils.toOrigValue(reimburseAmount, INDEX_HIGH));
+        _addEscrow(amount_,  reimburseAmount);
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
         tradeinReserveBalance = tradeinReserveBalance.add(tradinReturn);
 
-        _updateSellStaking(amount_, isHarvest_);
+        _updateSellStaking(amount_);
 
         emit Tradein(msg.sender, amount_);
     }
@@ -165,11 +122,10 @@ contract ProductTokenV1 is ProductToken {
         poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(fee_.mul(1e12).div(supply));
     }
 
-    function _updateSellStaking(uint32 amount_, bool isHarvest_) internal virtual {
+    function _updateSellStaking(uint32 amount_) internal virtual {
         if(userInfo[msg.sender].amount > 0) {
-            address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
             UserInfo storage user = userInfo[msg.sender];
-            if(isHarvest_ || balanceOf(msg.sender) <= user.records.length) {
+            if(balanceOf(msg.sender) <= user.records.length) {
                 uint max = uint256(amount_);
                 if(max > user.records.length) {
                     max = user.records.length;
@@ -185,7 +141,7 @@ contract ProductTokenV1 is ProductToken {
                 poolInfo.amount = poolInfo.amount.sub(value);
                 if(pending > 0) {
                     user.lastReward= pending;
-                    IERC20(highAddress).transfer(msg.sender, pending);
+                    high.transfer(msg.sender, pending);
                     poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
                 }
                 user.amount = user.amount.sub(value);
@@ -201,11 +157,6 @@ contract ProductTokenV1 is ProductToken {
         user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
     }
 
-    function getCurrentPriceByIds(uint256 ids_) external view virtual returns (uint256) {
-        require(_tokenUtils.isSupportIds(ids_), 'not support');
-        return _tokenUtils.toOrigValue(getCurrentPrice(), ids_);
-    }
-
     function updateSupplierInfo( address wallet_) external onlyOwner {
         require(wallet_!=address(0), "Address is invalid");
         supplier.wallet = wallet_;
@@ -214,8 +165,6 @@ contract ProductTokenV1 is ProductToken {
     function claimSupplier(uint256 amount_) external virtual {
         require(supplier.wallet!=address(0), "wallet is invalid");
         require(msg.sender == supplier.wallet, "The address is not allowed");
-        address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
-        IERC20 high = IERC20(highAddress);
         if (amount_ <= supplier.amount){
             bool success = high.transfer(msg.sender, amount_);
             if (success) {
@@ -226,8 +175,7 @@ contract ProductTokenV1 is ProductToken {
 
     function _updateSupplierFee(uint256 fee) internal virtual {
         if( fee > 0 ) {
-            uint256 charge = _tokenUtils.toOrigValue(fee, INDEX_HIGH);
-            supplier.amount = supplier.amount.add(charge);
+            supplier.amount = supplier.amount.add(fee);
         }
     }
 
@@ -246,9 +194,7 @@ contract ProductTokenV1 is ProductToken {
     *
     */
     function _refund(address buyer_, uint256 value_) internal virtual override {
-        address highAddress = _tokenUtils.getAddressByIds(INDEX_HIGH);
-
-        bool success = IERC20(highAddress).transfer(buyer_, value_);
+        bool success = high.transfer(buyer_, value_);
         require(success, "refund token failed");
     }
 
@@ -264,13 +210,10 @@ contract ProductTokenV1 is ProductToken {
         payable(msg.sender).transfer(value_);
     }
 
-    function withdrawERC20(uint256 ids_, uint256 amount_, address to_) external virtual onlyOwner{
-        require(_tokenUtils.isValidIds(ids_), 'not invalid id');
+    function withdrawHigh(uint256 amount_, address to_) external virtual onlyOwner{
         require(to_ != address(0), "invalid address");
-        address highAddress = _tokenUtils.getAddressByIds(ids_);
-        IERC20 instance = IERC20(highAddress);
-        require(amount_ <= instance.balanceOf(address(this)), 'invalid amount');
-        instance.transfer(to_, amount_);
+        require(amount_ <= high.balanceOf(address(this)), 'invalid amount');
+        high.transfer(to_, amount_);
     }
 
     function getUserReward(address addr_) external view virtual returns (uint256) {

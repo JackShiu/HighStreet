@@ -10,7 +10,6 @@ const DaiMock = artifacts.require('DaiMock');
 const BondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('ProductUpgradeableBeacon');
 const ChainLinkMock = artifacts.require('ChainLinkMock');
-const TokenUtils = artifacts.require('TokenUtils');
 
 require('chai')
 	.use(require('chai-as-promised'))
@@ -34,10 +33,6 @@ contract('productTokenV1 flow check', function (accounts) {
     const HsTokenEtherRatio = numberToBigNumber(0.5);
     const zeroAddress = "0x0000000000000000000000000000000000000000";
 
-    const  INDEX_ETH  = 0;
-    const  INDEX_HIGH = 1;
-    const  INDEX_DAI  = 2;
-
     before('deploy implementation', async function () {
         this.owner = accounts[0];
         this.user1 = accounts[1];
@@ -51,7 +46,6 @@ contract('productTokenV1 flow check', function (accounts) {
         this.DaiEtherMock = await ChainLinkMock.new(DaiEtherRatio, {from: this.owner});
         this.HighMock = await DaiMock.new();
         this.HsTokenEtherMock = await ChainLinkMock.new(HsTokenEtherRatio, {from: this.owner});
-        this.tokenUtils = await TokenUtils.new();
     });
 
     beforeEach(async function () {
@@ -72,111 +66,32 @@ contract('productTokenV1 flow check', function (accounts) {
         // get HighGO token address
         const highGoAddress = await this.tokenFactory.retrieveToken.call("HighGO");
         this.highGo = new ProductTokenV1(highGoAddress);
-
-        //setup and update tokenUtils
-        await this.highGo.setupTokenUtils(this.tokenUtils.address);
-        await this.tokenUtils.updateCurrency(1, 'HIGH', this.HighMock.address, this.DaiEtherMock.address, this.HsTokenEtherMock.address, true );
+        await this.highGo.setHigh(this.HighMock.address, {from: this.owner});
 
     });
 
     it('should unable to trade if product have not launch', async function (){
 
-        let { highGo, daiMock, HighMock, user1, tokenUtils } =this;
+        let { highGo, daiMock, HighMock, user1 } =this;
 
         await daiMock.faucet(user1, numberToBigNumber(1000));
         await HighMock.faucet(user1, numberToBigNumber(1000));
-
-        //enable support ETH/HIGH/DAI
-        await tokenUtils.updateCurrency(0, 'ETH', zeroAddress, this.DaiEtherMock.address, zeroAddress, true );
-        await tokenUtils.updateCurrency(1, 'HIGH', HighMock.address, this.DaiEtherMock.address, this.HsTokenEtherMock.address, true );
-        await tokenUtils.updateCurrency(2, 'DAI', daiMock.address, zeroAddress, zeroAddress, true );
-
-
-        let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
-        await HighMock.approve(highGo.address, price, {from: user1});
-        await expectRevert(
-            highGo.buyERC20(INDEX_HIGH, price, {from: user1})
-            , "unable to trade now"
-        );
-
-        price = await highGo.getCurrentPriceByIds(INDEX_ETH);
-        await expectRevert(
-            highGo.buyETH({from: user1, value:price})
-            , "unable to trade now"
-        );
-
-        price = await highGo.getCurrentPriceByIds(INDEX_DAI);
-        await daiMock.approve(highGo.address, price, {from: user1});
-        await expectRevert(
-            highGo.buyERC20(INDEX_DAI, price, {from: user1})
-            , "unable to trade now"
-        );
-
-        await expectRevert(
-            highGo.sell(1, false, {from: user1})
-            , "unable to trade now"
-        );
-
-        await expectRevert(
-            highGo.tradein(1, false, {from: user1})
-            , "unable to trade now"
-        );
-    });
-
-    it('should unable to trade if currency is not available', async function (){
-
-        let {owner, highGo, daiMock, HighMock, user1, tokenUtils } =this;
-
-        await daiMock.faucet(user1, numberToBigNumber(1000));
-        await HighMock.faucet(user1, numberToBigNumber(1000));
-
-        //disable support ETH/HIGH/DAI
-        let enable = false;
-        await tokenUtils.updateCurrency(0, 'ETH', zeroAddress, this.DaiEtherMock.address, zeroAddress, enable );
-        await tokenUtils.updateCurrency(1, 'HIGH', HighMock.address, this.DaiEtherMock.address, this.HsTokenEtherMock.address, enable );
-        await tokenUtils.updateCurrency(2, 'DAI', daiMock.address, zeroAddress, zeroAddress, enable );
-
-        highGo.launch({from: owner});
-
-        await expectRevert(
-            highGo.getCurrentPriceByIds(INDEX_ETH)
-            , "not support"
-        );
-
-        await expectRevert(
-            highGo.getCurrentPriceByIds(INDEX_HIGH)
-            , "not support"
-        );
-
-        await expectRevert(
-            highGo.getCurrentPriceByIds(INDEX_DAI)
-            , "not support"
-        );
 
         let price = await highGo.getCurrentPrice();
+        await HighMock.approve(highGo.address, price, {from: user1});
         await expectRevert(
-            highGo.buyERC20(INDEX_HIGH, price, {from: user1})
-            , "not support"
+            highGo.buy(price, {from: user1})
+            , "unable to trade now"
         );
 
         await expectRevert(
-            highGo.buyETH({from: user1, value:price})
-            , "not support"
+            highGo.sell(1, {from: user1})
+            , "unable to trade now"
         );
 
         await expectRevert(
-            highGo.buyERC20(INDEX_DAI, price, {from: user1})
-            , "not support"
-        );
-
-        await expectRevert(
-            highGo.sell(1, false, {from: user1})
-            , "not support"
-        );
-
-        await expectRevert(
-            highGo.tradein(1, false, {from: user1})
-            , "not support"
+            highGo.tradein(1, {from: user1})
+            , "unable to trade now"
         );
     });
 
@@ -191,9 +106,9 @@ contract('productTokenV1 flow check', function (accounts) {
         let amount = (await highGo.getAvailability()).toString();
         assert.equal(amount, max, "available amout of product token should equal to default value before any trade be made");
 
-        let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+        let price = await highGo.getCurrentPrice();
         await HighMock.approve(highGo.address, price, {from: user1});
-        await highGo.buyERC20(INDEX_HIGH, price, {from: user1});
+        await highGo.buy( price, {from: user1});
         assert.equal(await highGo.balanceOf(user1), 1, "should able to buy one product token");
 
         // getAvailability
@@ -211,35 +126,6 @@ contract('productTokenV1 flow check', function (accounts) {
 
     });
 
-    it('check token utils', async function (){
-        let {tokenUtils, highGo, daiMock, HighMock, user1, owner} =this;
-
-        await daiMock.faucet(user1, numberToBigNumber(1000));
-        await HighMock.faucet(user1, numberToBigNumber(1000));
-        highGo.launch({from: owner});
-
-        //enable support ETH/HIGH/DAI
-        let enable = true;
-        await tokenUtils.updateCurrency(0, 'ETH', zeroAddress, this.DaiEtherMock.address, zeroAddress, enable );
-        await tokenUtils.updateCurrency(1, 'HIGH', HighMock.address, this.DaiEtherMock.address, this.HsTokenEtherMock.address, enable );
-        await tokenUtils.updateCurrency(2, 'DAI', daiMock.address, zeroAddress, zeroAddress, enable );
-
-        let price_dai = new BN(await highGo.getCurrentPriceByIds(INDEX_DAI));
-        assert.equal(price_dai.toString()
-                ,(await highGo.getCurrentPriceByIds(INDEX_DAI)).toString()
-                ,'DAI should be same value');
-
-        let price_eth = price_dai.mul(new BN(DaiEtherRatio)).div(new BN(numberToBigNumber(1)));
-        assert.equal(price_eth.toString()
-                ,(await highGo.getCurrentPriceByIds(INDEX_ETH)).toString()
-                ,"ETH should be same value");
-
-        let price_high = price_dai.mul(new BN(DaiEtherRatio)).div(new BN(HsTokenEtherRatio));
-        assert.equal(price_high.toString()
-                ,(await highGo.getCurrentPriceByIds(INDEX_HIGH)).toString()
-                ,"HIGH sould be same value");
-    });
-
     it('should not able to trade if temp pause product token', async function (){
         let { highGo, daiMock, HighMock, user1, owner} =this;
 
@@ -248,82 +134,30 @@ contract('productTokenV1 flow check', function (accounts) {
 
         highGo.launch({from: owner});
 
-        let price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+        let price = await highGo.getCurrentPrice();
         await HighMock.approve(highGo.address, price, {from: user1});
-        await highGo.buyERC20(INDEX_HIGH, price, {from: user1});
+        await highGo.buy( price, {from: user1});
         assert.equal(await highGo.balanceOf(user1), 1, "user should able to buy token before is been paused");
 
         // paused product token
         highGo.pause({from: owner});
 
-        price = await highGo.getCurrentPriceByIds(INDEX_HIGH);
+        price = await highGo.getCurrentPrice();
         await HighMock.approve(highGo.address, price, {from: user1});
         await expectRevert(
-            highGo.buyERC20(INDEX_HIGH, price, {from: user1})
-            , "unable to trade now"
-        );
-
-        price = await highGo.getCurrentPriceByIds(INDEX_ETH);
-        await expectRevert(
-            highGo.buyETH({from: user1, value:price})
-            , "unable to trade now"
-        );
-
-        price = await highGo.getCurrentPriceByIds(INDEX_DAI);
-        await daiMock.approve(highGo.address, price, {from: user1});
-        await expectRevert(
-            highGo.buyERC20(INDEX_DAI, price, {from: user1})
+            highGo.buy( price, {from: user1})
             , "unable to trade now"
         );
 
         await expectRevert(
-            highGo.sell(1, false, {from: user1})
+            highGo.sell(1, {from: user1})
             , "unable to trade now"
         );
 
         await expectRevert(
-            highGo.tradein(1, false, {from: user1})
+            highGo.tradein(1, {from: user1})
             , "unable to trade now"
         );
-    });
-
-    it('should be success by using dai' , async function (){
-        let { highGo, daiMock, HighMock, user1, owner} =this;
-
-        highGo.launch({from: owner});
-        assert.equal(await highGo.balanceOf(user1), 0);
-
-        let price = await highGo.getCurrentPriceByIds(INDEX_DAI);
-        await daiMock.approve(highGo.address, price, {from: user1});
-        await highGo.buyERC20(INDEX_DAI, price, {from: user1});
-
-        assert.equal(await highGo.balanceOf(user1), 1);
-    });
-
-    it('should be success by using ether', async function (){
-        let { highGo, daiMock, HighMock, user1, owner} =this;
-
-        highGo.launch({from: owner});
-        assert.equal(await highGo.balanceOf(user1), 0);
-
-        let price = await highGo.getCurrentPriceByIds(INDEX_ETH);
-        await highGo.buyETH({from: user1, value: price})
-        assert.equal(await highGo.balanceOf(user1), 1);
-    });
-
-    it('should be success by using HsToken', async function (){
-        let { highGo, daiMock, HighMock, user1, owner} =this;
-
-        await daiMock.faucet(user1, numberToBigNumber(1000));
-        await HighMock.faucet(user1, numberToBigNumber(1000));
-
-        highGo.launch({from: owner});
-        assert.equal(await highGo.balanceOf(user1), 0);
-
-        let price = await highGo.getCurrentPriceByIds(1); //1 is high
-        await HighMock.approve(highGo.address, price, {from: user1});
-        await highGo.buyERC20(1, price, {from: user1});
-        assert.equal(await highGo.balanceOf(user1), 1);
     });
 
     it('Supplier', async function (){
@@ -341,10 +175,10 @@ contract('productTokenV1 flow check', function (accounts) {
         let supplierFee = new BN(0);
 
         for(let i=0 ; i< 5; i++) {
-            let price = await highGo.getCurrentPriceByIds(1);
+            let price = await highGo.getCurrentPrice();
             if(DEG) console.log(i, ': current product price(HIGH)', bigNumberToNumber(price));
             await HighMock.approve(highGo.address, price, {from: user1});
-            await highGo.buyERC20(1, price, {from: user1});
+            await highGo.buy(price, {from: user1});
             // 1% for supplier fee
             let supplierFeeRate = (new BN(price))
                                     .mul(new BN(numberToBigNumber(1)))
@@ -365,11 +199,9 @@ contract('productTokenV1 flow check', function (accounts) {
         sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
         // 1% for supplier fee
         let fee = sellReturn.mul(new BN(numberToBigNumber(1))).div(new BN(numberToBigNumber(100)));
-        // change face to high token
-        fee = await tokenUtils.toOrigValue(fee, INDEX_HIGH);
         console.log("fee:", bigNumberToNumber(fee));
         supplierFee = supplierFee.add(fee);
-        await highGo.sell(amountToSell, false, {from: user1});
+        await highGo.sell(amountToSell, {from: user1});
 
         balance = await highGo.getSupplierBalance();
         if(DEG) console.log("2.supplierFee:", bigNumberToNumber(supplierFee));
@@ -385,15 +217,13 @@ contract('productTokenV1 flow check', function (accounts) {
         sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
         // 1% for supplier fee
         fee = sellReturn.mul(new BN(numberToBigNumber(1))).div(new BN(numberToBigNumber(100)));
-        // change face to high token
-        fee = await tokenUtils.toOrigValue(fee, INDEX_HIGH);
         console.log("fee:", bigNumberToNumber(fee));
         supplierFee = supplierFee.add(fee);
         let tradinReturn = await highGo.calculateTradinReturn(amountToSell);
-        fee = await tokenUtils.toOrigValue(tradinReturn, INDEX_HIGH);
+        fee = tradinReturn;
         console.log("tradinReturn:", bigNumberToNumber(fee));
         supplierFee = supplierFee.add(fee);
-        await highGo.tradein(amountToSell, false, {from: user1});
+        await highGo.tradein(amountToSell, {from: user1});
 
         balance = await highGo.getSupplierBalance();
         if(DEG) console.log("3.supplierFee:", bigNumberToNumber(supplierFee));
@@ -401,7 +231,7 @@ contract('productTokenV1 flow check', function (accounts) {
         console.log(await highGo.balanceOf(user1));
         // assert.equal(supplierFee.toString(), balance.toString());
 
-        // // claimSupplierDai
+        // // claimSupplier
         let claimValue = (new BN(balance)).mul(new BN(numberToBigNumber(50))).div(new BN(numberToBigNumber(100)));
         let remainValue = (new BN(balance)).sub(claimValue);
         await highGo.claimSupplier(claimValue, {from: supplier});

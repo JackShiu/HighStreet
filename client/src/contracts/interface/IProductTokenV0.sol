@@ -40,11 +40,7 @@ interface IProductTokenV0 {
 
     function calculateSellReturn(uint32 _amountProduct) external view returns (uint256 soldAmount);
 
-    function setupTokenUtils(address addr_) external;
-
-    function setupVoucher(address addr_, uint256 tokenId_, bool enable_) external;
-
-    function pauseVoucher(bool enable_) external;
+    function setupVoucher(address addr_, uint256 tokenId_) external;
 
     function claimVoucher(uint256 tokenId_) external;
 

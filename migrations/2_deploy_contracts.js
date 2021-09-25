@@ -9,7 +9,6 @@ const Factory = artifacts.require("TokenFactory");
 const TokenFactoryProxy = artifacts.require('TokenFactoryProxy');
 const BancorBondingCurve = artifacts.require('BancorBondingCurve');
 const UpgradeableBeacon = artifacts.require('UpgradeableBeacon');
-const TokenUtils = artifacts.require('TokenUtils');
 
 let zeroAddress = "0x0000000000000000000000000000000000000000";
 
@@ -37,12 +36,9 @@ module.exports = async function (deployer, network, accounts ) {
 		await deployer.deploy(Factory, {from:owner, overwrite: false});
 		const factoyImpl = await Factory.deployed();
 
-		await deployer.deploy(TokenUtils, {from:owner, overwrite: false});
-		const tokenUtils = await TokenUtils.deployed();
-
 
 		const data = factoyImpl.contract.methods.initialize(beacon.address).encodeABI();
-		await deployer.deploy(TokenFactoryProxy, factoyImpl.address, data);
+		await deployer.deploy(TokenFactoryProxy, factoyImpl.address, data, {from:owner, overwrite: false});
 		const factoyProxy = await TokenFactoryProxy.deployed();
 		const factoryInstance = await Factory.at(factoyProxy.address);
 
@@ -68,8 +64,8 @@ module.exports = async function (deployer, network, accounts ) {
 				name, val
 			);
 			const highGOAddress = await factoryInstance.retrieveToken("HighGO");
-			const highGOToken = await TokenV1.at(highGOAddress);
-			highGOToken.setupTokenUtils(tokenUtils.address);
+			console.log("highGOAddress", highGOAddress);
+			const highGOToken = await TokenV0.at(highGOAddress);
 
 			//default launch token directly
 			await highGOToken.launch();

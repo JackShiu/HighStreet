@@ -1218,10 +1218,10 @@
   "resolved" "https://registry.npmjs.org/@openzeppelin/contracts-upgradeable/-/contracts-upgradeable-4.0.0.tgz"
   "version" "4.0.0"
 
-"@openzeppelin/contracts@^4.1.0":
-  "integrity" "sha512-TihZitscnaHNcZgXGj9zDLDyCqjziytB4tMCwXq0XimfWkAjBYyk5/pOsDbbwcavhlc79HhpTEpQcrMnPVa1mw=="
-  "resolved" "https://registry.npmjs.org/@openzeppelin/contracts/-/contracts-4.1.0.tgz"
-  "version" "4.1.0"
+"@openzeppelin/contracts@^4.3.2":
+  "integrity" "sha512-AybF1cesONZStg5kWf6ao9OlqTZuPqddvprc0ky7lrUVOjXeKpmQ2Y9FK+6ygxasb+4aic4O5pneFBfwVsRRRg=="
+  "resolved" "https://registry.npmjs.org/@openzeppelin/contracts/-/contracts-4.3.2.tgz"
+  "version" "4.3.2"
 
 "@openzeppelin/test-helpers@^0.5.11":
   "integrity" "sha512-HkFpCjtTD8dk+wdYhsT07YbMGCE+Z4Wp5sBKXvPDF3Lynoc0H2KqZgCWV+qr2YZ0WW1oX/sXkKFrrKJ0caBTjw=="
