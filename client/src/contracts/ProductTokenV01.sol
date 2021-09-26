@@ -7,11 +7,11 @@ import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
 import "./ProductToken.sol";
 import "./interface/IVNFT.sol";
 
-/// @title ProductTokenV0
-/// @notice This is version 0 of the product token implementation.
+/// @title ProductTokenV01
+/// @notice This is version 01 of the product token implementation.
 /// @dev This contract builds on top of version 0 by including transaction logics, such as buy and sell transfers
 ///    and exchange rate computation by including a price oracle.
-contract ProductTokenV0 is ProductToken {
+contract ProductTokenV01 is ProductToken {
 	using SafeMathUpgradeable for uint256;
 
     struct supplierInfo {
@@ -19,13 +19,12 @@ contract ProductTokenV0 is ProductToken {
         address wallet;
     }
     struct UserInfo {
-        uint256 amount;
+        uint256 totalValue;
         uint256 rewardDebt;
-        uint256 index;
-        uint256[] records;
+        uint256 amount;
     }
     struct PoolInfo {
-        uint256 amount; // record the entire pool vaule
+        uint256 value; // record the entire pool value
         uint256 accRewardPerShare; // Accumulated reward per share
         uint256 tokenReward; //total reward
     }
@@ -38,46 +37,84 @@ contract ProductTokenV0 is ProductToken {
     PoolInfo public poolInfo;
     voucherInfo public voucher;
     mapping (address => UserInfo) public userInfo;
+    mapping (address => uint256 []) public userRecords;
 
-    function _updatePool(uint256 fee_) internal virtual{
-        uint256 supply = poolInfo.amount;
-        if (supply == 0) {
+    function _updateSellStaking(uint32 sellAmount_, uint256 tokenId_) internal virtual {
+        UserInfo memory user = userInfo[msg.sender];
+        PoolInfo memory pool = poolInfo;
+
+        // 1. user.totalValue > 0
+        // 2. User balance
+        // 3. User amount;
+
+        // 使用者有足夠的餘額 跟 有足夠的紀錄
+        if(user.totalValue < 0 || user.amount < 0) {
+            return;
+        }
+
+        // 如果使用者想賣的數量 > 實際的紀錄，只算紀錄的部分
+        uint256 amount = sellAmount_;
+        if(sellAmount_ > user.amount ) {
+            amount = user.amount;
+        }
+
+        uint256 liquidationValue = 0;
+        uint256 [] memory records = userRecords[msg.sender];
+        uint256 remainingAmount = user.amount.sub(amount);
+        for(uint i = remainingAmount ; i < amount; i++) {
+            liquidationValue = liquidationValue.add(records[i]);
+        }
+        user.amount = remainingAmount;
+
+        uint256 reward = user.totalValue.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+        pool.value = pool.value.sub(liquidationValue);
+        if(reward > 0 && pool.tokenReward > reward) {
+            IVNFT(voucher.addr).transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, reward);
+            pool.tokenReward = pool.tokenReward.sub(reward);
+        }
+        user.totalValue = user.totalValue.sub(liquidationValue);
+        user.rewardDebt = user.totalValue.mul(pool.accRewardPerShare).div(1e12);
+        poolInfo = pool; //須確認是否要這步驟 cp memory to storage
+        userInfo[msg.sender] = user; //須確認是否要這步驟 cp memory to storage
+    }
+
+    function _updateBuyStaking(uint256 reward_, uint256 price_, uint256 tokenId_) internal virtual {
+        UserInfo memory user = userInfo[msg.sender];
+        PoolInfo memory pool = poolInfo;
+
+        if (pool.value == 0 || pool.tokenReward == 0) {
             poolInfo.accRewardPerShare = 0;
             return;
         }
-        poolInfo.accRewardPerShare = poolInfo.accRewardPerShare.add(fee_.mul(1e12).div(supply));
-    }
+        pool.accRewardPerShare = pool.accRewardPerShare.add(reward_.mul(1e12).div(pool.value));
+        pool.tokenReward = pool.tokenReward.add(reward_);
 
-    function _updateSellStaking(uint32 amount_, uint256 tokenId_) internal virtual {
-        UserInfo storage user = userInfo[msg.sender];
-        require(user.amount > 0, "invalid amount");
-        if(balanceOf(msg.sender) <= user.records.length) {
-            uint max = uint256(amount_);
-            if(max > user.records.length) {
-                max = user.records.length;
-            }
-            uint256 value = 0;
-            for(uint i = 0; i < max; i++) {
-                value = value.add(user.records[user.records.length.sub(1)]);
-                user.records.pop();
-            }
-            PoolInfo storage pool = poolInfo;
-            uint256 reward = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-            poolInfo.amount = poolInfo.amount.sub(value);
-            if(reward > 0) {
-                IVNFT(voucher.addr).transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, reward);
-                poolInfo.tokenReward = poolInfo.tokenReward.sub(reward);
-            }
-            user.amount = user.amount.sub(value);
-            user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
+        uint256 userReward = user.totalValue.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+        if(userReward > 0 && pool.tokenReward > userReward) {
+            IVNFT instance = IVNFT(voucher.addr);
+            instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, userReward);
+            pool.tokenReward = pool.tokenReward.sub(userReward);
         }
-    }
+        pool.value = pool.value.add(price_);
+        user.totalValue = user.totalValue.add(price_);
+        user.rewardDebt = user.totalValue.mul(pool.accRewardPerShare).div(1e12);
 
-    function _updateUserInfo(uint256 price_ ) internal virtual {
-        UserInfo storage user = userInfo[msg.sender];
-        user.amount = user.amount.add(price_);
-        user.records.push(price_);
-        user.rewardDebt = user.amount.mul(poolInfo.accRewardPerShare).div(1e12);
+        uint256 userAvail = balanceOf(msg.sender);
+        uint256 index = user.amount;
+        // 如果使用者場外賣掉了，則直接忽視掉該次的staking數量
+        if(userAvail < index){
+            index= userAvail;
+        }
+        user.amount = index.add(1); //不管怎樣，這次都是有買一個，所以還是要+1
+        // 最後把所有資料塞回去storage
+        uint256 [] storage records = userRecords[msg.sender];
+        if(records.length < user.amount) {
+            records.push(price_);
+        } else {
+            records[index] = price_;
+        }
+        poolInfo = pool; //須確認是否要這步驟 cp memory to storage
+        userInfo[msg.sender] = user; //須確認是否要這步驟 cp memory to storage
     }
 
     function setupVoucher(address addr_, uint256 tokenId_) external virtual onlyOwner{
@@ -106,17 +143,7 @@ contract ProductTokenV0 is ProductToken {
             }
             _updateSupplierFee(fee.mul(1e12).div(8e12));
             uint256 reward = fee.mul(6e12).div(8e12);
-            _updatePool(reward);
-            poolInfo.tokenReward = poolInfo.tokenReward.add(reward);
-            UserInfo storage user = userInfo[msg.sender];
-            PoolInfo storage pool = poolInfo;
-            uint256 pending = user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-            if(pending > 0) {
-                instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, pending);
-                poolInfo.tokenReward = poolInfo.tokenReward.sub(pending);
-            }
-            poolInfo.amount = poolInfo.amount.add(price);
-            _updateUserInfo(price);
+            _updateBuyStaking(reward, price, tokenId_);
         } else {
             instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, maxPrice_);
         }
@@ -175,12 +202,15 @@ contract ProductTokenV0 is ProductToken {
         return supplier.amount;
     }
 
-    // function getUserReward(address addr_) external view virtual returns (uint256) {
-    //     if(userInfo[addr_].amount > 0) {
-    //         UserInfo storage user = userInfo[addr_];
-    //         PoolInfo storage pool = poolInfo;
-    //         return user.amount.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-    //     }
-    //     return 0;
-    // }
+    function getUserReward(address addr_) external view virtual returns (uint256) {
+        if(userInfo[addr_].amount > 0) {
+            UserInfo memory user = userInfo[addr_];
+            PoolInfo memory pool = poolInfo;
+            uint256 userReward = user.totalValue.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
+            if(userReward > 0 && pool.tokenReward > userReward) {
+                return userReward;
+            }
+        }
+        return 0;
+    }
 }

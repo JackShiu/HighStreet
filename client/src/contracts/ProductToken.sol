@@ -163,26 +163,20 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
   function getPriceForN(uint32 _amountProduct)
   	public view virtual returns	(uint256 price)
   {
-    (uint price, uint fee) = _getPriceForN(_amountProduct);
-    return price.add(fee);
+    (uint value, uint fee) = _getPriceForN(_amountProduct);
+    return value.add(fee);
   }
 
   function _getPriceForN(uint32 _amountProduct)
-  	public view virtual returns	(uint256 price, uint256 fee) {
+  	internal view virtual returns	(uint256, uint256) {
       uint256 price = bondingCurve.calculatePriceForNTokens(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
       //8% is the platform transaction fee
       uint256 fee = price.mul(8e10).div(1e12);
       return (price, fee);
     }
 
-  /**
-   * @dev Function that computes number of product tokens one can buy given an amount in reserve token.
-   *
-   * @param  _amountReserve          purchaing amount in reserve token (dai)
-   * @return mintAmount              number of tokens in traded token that can be purchased by given amount.
-  */
   function _buyReturn(uint256 _amountReserve)
-    internal view virtual returns (uint32 mintAmount, uint fee)
+    internal view virtual returns (uint32, uint)
   {
     uint value = _amountReserve.mul(1e12).div(1.08e12);
     uint fee = value.mul(6e10).div(1e12);
@@ -203,14 +197,8 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     return amount;
   }
 
-  /**
-   * @dev Function that computes selling price in reserve tokens given an amount in traded token.
-   *
-   * @param  _amountProduct          selling amount in product token
-   * @return soldAmount              total amount that will be transferred to the seller.
-  */
   function _sellReturn(uint32 _amountProduct)
-    internal view virtual returns (uint256 soldAmount, uint256 fee)
+    internal view virtual returns (uint256, uint256)
   {
     // ppm of 98%. 2% is the platform transaction fee
     uint reimburseAmount = bondingCurve.calculateSaleReturn(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
