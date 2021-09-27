@@ -43,16 +43,10 @@ contract ProductTokenV01 is ProductToken {
         UserInfo memory user = userInfo[msg.sender];
         PoolInfo memory pool = poolInfo;
 
-        // 1. user.totalValue > 0
-        // 2. User balance
-        // 3. User amount;
-
-        // 使用者有足夠的餘額 跟 有足夠的紀錄
         if(user.totalValue < 0 || user.amount < 0) {
             return;
         }
 
-        // 如果使用者想賣的數量 > 實際的紀錄，只算紀錄的部分
         uint256 amount = sellAmount_;
         if(sellAmount_ > user.amount ) {
             amount = user.amount;
@@ -74,47 +68,59 @@ contract ProductTokenV01 is ProductToken {
         }
         user.totalValue = user.totalValue.sub(liquidationValue);
         user.rewardDebt = user.totalValue.mul(pool.accRewardPerShare).div(1e12);
-        poolInfo = pool; //須確認是否要這步驟 cp memory to storage
-        userInfo[msg.sender] = user; //須確認是否要這步驟 cp memory to storage
+        poolInfo = pool;
+        userInfo[msg.sender] = user;
     }
 
     function _updateBuyStaking(uint256 reward_, uint256 price_, uint256 tokenId_) internal virtual {
         UserInfo memory user = userInfo[msg.sender];
         PoolInfo memory pool = poolInfo;
 
-        if (pool.value == 0 || pool.tokenReward == 0) {
+        if (pool.value == 0 || pool.tokenReward == 0) { //如過available = default -> skip
             poolInfo.accRewardPerShare = 0;
             return;
         }
+
         pool.accRewardPerShare = pool.accRewardPerShare.add(reward_.mul(1e12).div(pool.value));
         pool.tokenReward = pool.tokenReward.add(reward_);
 
-        uint256 userReward = user.totalValue.mul(pool.accRewardPerShare).div(1e12).sub(user.rewardDebt);
-        if(userReward > 0 && pool.tokenReward > userReward) {
-            IVNFT instance = IVNFT(voucher.addr);
-            instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, userReward);
-            pool.tokenReward = pool.tokenReward.sub(userReward);
+        uint256 userBalance = balanceOf(msg.sender) - 1;
+        if(userBalance > 0) {
+            if(userBalance < user.amount){
+                uint256 [] memory record = userRecords[msg.sender];
+                uint256 value = 0;
+                for(uint i = userBalance; i < user.amount; i ++ ) {
+                    value = value.add(record[i]);
+                }
+                user.totalValue = user.totalValue.sub(value);
+            }
+            user.amount = userBalance;
         }
+
+        uint256 userReward = user.totalValue.mul(pool.accRewardPerShare).div(1e12);
+        if(userReward > user.rewardDebt ) {
+            userReward = userReward.sub(user.rewardDebt);
+            if(userReward > 0 && pool.tokenReward > userReward) {
+                IVNFT instance = IVNFT(voucher.addr);
+                instance.transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, userReward);
+                pool.tokenReward = pool.tokenReward.sub(userReward);
+            }
+        }
+
         pool.value = pool.value.add(price_);
         user.totalValue = user.totalValue.add(price_);
         user.rewardDebt = user.totalValue.mul(pool.accRewardPerShare).div(1e12);
 
-        uint256 userAvail = balanceOf(msg.sender);
-        uint256 index = user.amount;
-        // 如果使用者場外賣掉了，則直接忽視掉該次的staking數量
-        if(userAvail < index){
-            index= userAvail;
-        }
-        user.amount = index.add(1); //不管怎樣，這次都是有買一個，所以還是要+1
-        // 最後把所有資料塞回去storage
+        user.amount = user.amount + 1;
+
         uint256 [] storage records = userRecords[msg.sender];
         if(records.length < user.amount) {
             records.push(price_);
         } else {
-            records[index] = price_;
+            records[user.amount -1] = price_;
         }
-        poolInfo = pool; //須確認是否要這步驟 cp memory to storage
-        userInfo[msg.sender] = user; //須確認是否要這步驟 cp memory to storage
+        poolInfo = pool;
+        userInfo[msg.sender] = user;
     }
 
     function setupVoucher(address addr_, uint256 tokenId_) external virtual onlyOwner{

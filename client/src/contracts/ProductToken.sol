@@ -171,7 +171,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
   	internal view virtual returns	(uint256, uint256) {
       uint256 price = bondingCurve.calculatePriceForNTokens(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
       //8% is the platform transaction fee
-      uint256 fee = price.mul(8e10).div(1e12);
+      uint256 fee = price.mul(8e12).div(1e14);
       return (price, fee);
     }
 
@@ -179,7 +179,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     internal view virtual returns (uint32, uint)
   {
     uint value = _amountReserve.mul(1e12).div(1.08e12);
-    uint fee = value.mul(6e10).div(1e12);
+    uint fee = value.mul(8e12).div(1e14);
     uint32 amount = bondingCurve.calculatePurchaseReturn(_getTotalSupply(), reserveBalance, reserveRatio, value.sub(fee));
     return (amount, fee);
   }
@@ -202,7 +202,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
   {
     // ppm of 98%. 2% is the platform transaction fee
     uint reimburseAmount = bondingCurve.calculateSaleReturn(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
-    uint fee = reimburseAmount.mul(2e10).div(1e12);
+    uint fee = reimburseAmount.mul(6e10).div(1e12);
     return (reimburseAmount, fee);
   }
 
@@ -247,7 +247,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
     _mint(msg.sender, 1);
     reserveBalance = reserveBalance.add(price.sub(fee));
     emit Buy(msg.sender, 1, price);
-    return (1, _deposit.sub(price), price, fee);
+    return (1, _deposit.sub(price).sub(fee), price, fee);
   }
 
    /**

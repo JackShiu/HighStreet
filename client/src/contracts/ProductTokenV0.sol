@@ -103,4 +103,6 @@ contract ProductTokenV0 is ProductToken {
         return supplier.amount;
     }
 
+    //get voucher tokenId
+    //get voucher balance
 }
