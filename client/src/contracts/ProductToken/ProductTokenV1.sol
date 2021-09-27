@@ -55,7 +55,7 @@ contract ProductTokenV1 is ProductToken {
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
 
         bool success = high.transfer(msg.sender, price);
-        _updateSupplierFee(fee.mul(1e12).div(6e12));
+        _updateSupplierFee(fee.mul(1e12).div(2e12));
         require(success, "selling token failed");
     }
 
@@ -71,7 +71,7 @@ contract ProductTokenV1 is ProductToken {
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
 
         uint256 tradinReturn = calculateTradinReturn(amount_);
-        _updateSupplierFee(fee.mul(1e12).div(6e12).add(tradinReturn));
+        _updateSupplierFee(fee.mul(1e12).div(2e12).add(tradinReturn));
         reimburseAmount = reimburseAmount.sub(fee);
         _addEscrow(amount_,  reimburseAmount);
         _burn(msg.sender, amount_);

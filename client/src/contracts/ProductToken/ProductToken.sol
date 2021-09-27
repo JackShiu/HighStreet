@@ -202,7 +202,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
   {
     // ppm of 98%. 2% is the platform transaction fee
     uint reimburseAmount = bondingCurve.calculateSaleReturn(_getTotalSupply(), reserveBalance, reserveRatio, _amountProduct);
-    uint fee = reimburseAmount.mul(6e10).div(1e12);
+    uint fee = reimburseAmount.mul(2e10).div(1e12);
     return (reimburseAmount, fee);
   }
 
@@ -245,7 +245,7 @@ contract ProductToken is ERC20Upgradeable, Escrow, OwnableUpgradeable {
       return (0, _deposit, 0, 0);
     }
     _mint(msg.sender, 1);
-    reserveBalance = reserveBalance.add(price.sub(fee));
+    reserveBalance = reserveBalance.add(price);
     emit Buy(msg.sender, 1, price);
     return (1, _deposit.sub(price).sub(fee), price, fee);
   }

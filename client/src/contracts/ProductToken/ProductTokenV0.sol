@@ -59,7 +59,7 @@ contract ProductTokenV0 is ProductToken {
     function sellByVoucher(uint256 tokenId_, uint32 amount_) external virtual onlyIfTradable{
         (uint256 price, uint256 fee )= _sellForAmount(amount_);
         IVNFT(voucher.addr).transferFrom(address(this), msg.sender, voucher.tokenId, tokenId_, price);
-        _updateSupplierFee(fee.mul(1e12).div(6e12));
+        _updateSupplierFee(fee.mul(1e12).div(2e12));
     }
 
     function tradeinVoucher(uint256 tokenId_, uint32 amount_) external virtual onlyIfTradable {
@@ -68,7 +68,7 @@ contract ProductTokenV0 is ProductToken {
 
         (uint256 reimburseAmount, uint fee) = _sellReturn(amount_);
         uint256 tradinReturn = calculateTradinReturn(amount_);
-        _updateSupplierFee(fee.mul(1e12).div(6e12).add(tradinReturn));
+        _updateSupplierFee(fee.mul(1e12).div(2e12).add(tradinReturn));
         _addEscrow(amount_,  reimburseAmount.sub(fee));
         _burn(msg.sender, amount_);
         tradeinCount = tradeinCount + amount_;
