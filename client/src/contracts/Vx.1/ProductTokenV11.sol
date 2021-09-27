@@ -4,8 +4,8 @@ pragma solidity ^0.8.3;
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts-upgradeable/utils/math/SafeMathUpgradeable.sol";
-import "./ProductToken.sol";
-import "./interface/IVNFT.sol";
+import "../ProductToken.sol";
+import "../interface/IVNFT.sol";
 
 /// @title ProductTokenV1
 /// @notice This is version 1 of the product token implementation.

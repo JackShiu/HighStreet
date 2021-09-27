@@ -196,7 +196,7 @@ contract('productTokenV1 flow check', function (accounts) {
         // sellReturn already contain 2% platform fee
         let sellReturn = await highGo.calculateSellReturn(amountToSell);
         // origin value = sellReturn / 0.98
-        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
+        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(94)))
         // 1% for supplier fee
         let fee = sellReturn.mul(new BN(numberToBigNumber(1))).div(new BN(numberToBigNumber(100)));
         console.log("fee:", bigNumberToNumber(fee));
@@ -214,7 +214,7 @@ contract('productTokenV1 flow check', function (accounts) {
         // sellReturn already contain 2% platform fee
         sellReturn = await highGo.calculateSellReturn(amountToSell);
         // origin value = sellReturn / 0.98
-        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(98)))
+        sellReturn = (new BN(sellReturn)).mul(new BN(numberToBigNumber(100))).div(new BN(numberToBigNumber(94)))
         // 1% for supplier fee
         fee = sellReturn.mul(new BN(numberToBigNumber(1))).div(new BN(numberToBigNumber(100)));
         console.log("fee:", bigNumberToNumber(fee));
@@ -229,7 +229,7 @@ contract('productTokenV1 flow check', function (accounts) {
         if(DEG) console.log("3.supplierFee:", bigNumberToNumber(supplierFee));
         if(DEG) console.log("3.balance:", bigNumberToNumber(balance));
         console.log(await highGo.balanceOf(user1));
-        // assert.equal(supplierFee.toString(), balance.toString());
+        assert.equal(supplierFee.toString(), balance.toString());
 
         // // claimSupplier
         let claimValue = (new BN(balance)).mul(new BN(numberToBigNumber(50))).div(new BN(numberToBigNumber(100)));
